@@ -19,7 +19,7 @@ this.Golem = this.Golem || {};
                 value = value[property];
             });
 
-            exists = _.isUndefined(value);
+            exists = !_.isUndefined(value);
 
             if (!exists) {
                 console.log(dependencies + ' is undefined.');

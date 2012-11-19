@@ -9,7 +9,7 @@ this.Golem = this.Golem || {};
      * 
      * @class Preload
      * @constructor
-     * @param manifest Array optional
+     * @param {Array} manifest optional
      */
     Preload = function(manifest) {
         
@@ -32,7 +32,7 @@ this.Golem = this.Golem || {};
      * 
      * Returns a boolean indicating if the manifest has already started loading.
      * 
-     * @param Mixed manifest String or Array of Strings
+     * @param {Mixed} manifest
      * @return Boolean
      */
     Preload.prototype.addAsset = function(manifest) {
@@ -48,12 +48,16 @@ this.Golem = this.Golem || {};
     /**
      * Starts loading the manifest.
      * 
+     * @param {Function} callback
      * @returns void
      */
-    Preload.prototype.init = function() {
+    Preload.prototype.init = function(callback) {
         var p = this.p;
         
-        if (!this.loaded) {
+        if (this.loaded) {
+            console.log('Golem.Preload.init method should only be called once.');
+        } else {
+            p.onComplete = callback || function() {};
             p.loadManifest(this.manifest, false);
 
             this.loaded = true;
