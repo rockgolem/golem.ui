@@ -5,13 +5,26 @@ this.Golem = this.Golem || {};
     var Util = {};
     
     Util.checkExists = function(dependencies, container) {
-        var properties = dependencies.split('.'),
+        var properties, value, exists;
+        
+        if (_.isArray(dependencies)) {
+            _.each(dependencies, function(single) {
+                this.checkExists(single, container);
+            }, this);
+        } else {
+            properties = dependencies.split('.');
             value = container || window;
-        _.each(properties, function(property) {
-            value = value[property];
-        });
-    
-        return !_.isUndefined(value);
+
+            _.each(properties, function(property) {
+                value = value[property];
+            });
+
+            exists = _.isUndefined(value);
+
+            if (!exists) {
+                console.log(dependencies + ' is undefined.');
+            }
+        }
     };
 
     _.extend(window.Golem, { Util : Util });

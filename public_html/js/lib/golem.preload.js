@@ -2,12 +2,7 @@
 this.Golem = this.Golem || {};
 
 (function(window, document, createjs, _, undefined) {
-    var Preload, dependencies;
-    
-    dependencies = [
-        'createjs.PreloadJS',
-        '_'
-    ];
+    var Preload;
     
     /**
      * PreloadJS Wrapper
@@ -17,6 +12,12 @@ this.Golem = this.Golem || {};
      * @param manifest Array optional
      */
     Preload = function(manifest) {
+        
+        // check for missing dependencies
+        Golem.Util.checkExists([
+            'createjs.PreloadJS'
+        ]);
+    
         this.p = new createjs.PreloadJS();
         this.manifest = _.isArray(manifest) ? manifest : [];
         this.head = document.getElementsByTagName('head')[0];
