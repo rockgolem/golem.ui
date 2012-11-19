@@ -28,20 +28,29 @@ this.Golem = this.Golem || {};
     };
 
     UI.prototype.resizeCanvas = function() {
-        var options, canvas, width, height, viewportWidth, viewportHeight;
+        var options, canvas, width, height, aspectRatio, viewportWidth,
+            viewportHeight, viewportAspect, viewportRatio, isWide;
         
         canvas = this.canvas;
         options = this.options;
         viewportWidth = window.innerWidth;
         viewportHeight = window.innerHeight;
-
-        width = viewportWidth * (options.widthRatio || 0.9);
-        height = width / (options.aspectRatio || 8/6);
+        viewportAspect = viewportWidth / viewportHeight;
+        viewportRatio = options.viewportRatio || 0.95;
+        aspectRatio = options.aspectRatio || 8/6;
+        
+        if (viewportAspect <= aspectRatio) {
+            width  = viewportWidth * viewportRatio;
+            height = width / aspectRatio;
+        } else {
+            height = viewportHeight * viewportRatio;
+            width  = height * aspectRatio;
+        }
         
         _.extend(canvas.style, {
             position : 'fixed',
-            left : (viewportWidth - width) / 2,
-            top : (viewportHeight - height) / 2
+            left : ((viewportWidth - width) / 2).toFixed(0) + 'px',
+            top : ((viewportHeight - height) / 2).toFixed(0) + 'px'
         });
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
