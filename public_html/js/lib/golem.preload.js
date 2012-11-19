@@ -2,7 +2,12 @@
 this.Golem = this.Golem || {};
 
 (function(window, document, createjs, _, undefined) {
-    var Preload;
+    var Preload, dependencies;
+    
+    dependencies = [
+        'createjs.PreloadJS',
+        '_'
+    ];
     
     /**
      * PreloadJS Wrapper
@@ -77,5 +82,5 @@ this.Golem = this.Golem || {};
         }        
     };
 
-    window.Golem.Preload = Preload;
-}());
+    _.extend(window.Golem, { Preload : Preload });
+}(this, document, createjs, _));
