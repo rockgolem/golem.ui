@@ -9,7 +9,7 @@ this.Golem = this.Golem || {};
      * 
      * @class Preload
      * @constructor
-     * @param {Array} manifest optional
+     * @param {Array} manifest { src : 'path/to/resource', id : 'Global.Object'}
      */
     Preload = function(manifest) {
         
@@ -19,16 +19,16 @@ this.Golem = this.Golem || {};
         ]);
     
         this.p = new createjs.PreloadJS();
-        this.manifest = _.isArray(manifest) ? manifest : [];
+        this.manifest = _.isUndefined(manifest) ? [] : manifest;
         this.head = document.getElementsByTagName('head')[0];
         this.body = document.body;
         this.loaded = false;
     };
     
     /**
-     * Used to add assets to the manifest.  Pass in a single String path, or an
-     * Array of paths.  If the initial manifest is already loaded or has already
-     * started loading, this method handles it gracefully.
+     * Used to add assets to the manifest.  Pass in a single Object, or an
+     * Array of objects.  If the initial manifest is already loaded or has
+     * already started loading, this method handles it gracefully.
      * 
      * Returns a boolean indicating if the manifest has already started loading.
      * 
@@ -57,9 +57,8 @@ this.Golem = this.Golem || {};
         if (this.loaded) {
             console.log('Golem.Preload.init method should only be called once.');
         } else {
-            p.onComplete = callback || function() {};
             p.loadManifest(this.manifest, false);
-
+            p.onComplete = this.getCallback(callback);
             this.loaded = true;
 
             p.onFileLoad = _.bind(this.handleFile, this);
@@ -84,7 +83,27 @@ this.Golem = this.Golem || {};
             case p.IMAGE : break;
             case p.JSON : break;
             case p.XML : break;
-        }        
+        }
+    };
+    
+    Preload.prototype.getCallback = function(callback) {
+        var p = this.p
+        callback = _.isFunction(callback) ? callback : function() {};
+        return _.bind(function() {
+            var loaded = _.all(this.manifest, function(file) {
+                var parts = file.id.split('.'), lib = window;
+                _.each(parts, function(property) {
+                    lib = lib[property];
+                });
+                return !_.isUndefined(lib);
+            }, this);
+        
+            if (loaded) {
+                callback();
+            } else {
+                setTimeout(_.bind(function() { this.getCallback(callback)(); }, this), 1);
+            }
+        }, this);
     };
 
     _.extend(window.Golem, { Preload : Preload });
