@@ -36,7 +36,7 @@ this.Golem = this.Golem || {};
         viewportWidth = window.innerWidth;
         viewportHeight = window.innerHeight;
         viewportAspect = viewportWidth / viewportHeight;
-        viewportRatio = options.viewportRatio || 0.95;
+        viewportRatio = options.viewportRatio || 0.98;
         aspectRatio = options.aspectRatio || 8/6;
         
         if (viewportAspect <= aspectRatio) {
