@@ -25,6 +25,7 @@ this.Golem = this.Golem || {};
                 console.log(dependencies + ' is undefined.');
             }
         }
+        return exists;
     };
 
     _.extend(window.Golem, { Util : Util });
