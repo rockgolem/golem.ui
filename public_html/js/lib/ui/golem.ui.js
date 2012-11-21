@@ -15,13 +15,26 @@ this.Golem = this.Golem || {};
     UI = function(options) {
         options = options || {};
         this.canvas = options.canvas || UI.createCanvas();
-        
         this.options = _.extend({}, options, { canvas : undefined });
-        
+        this.prepareCanvas();
+    };
+    
+    /**
+     * Some preparation styling and event binding.  Called by the constructor.
+     * 
+     * @returns {undefined}
+     */
+    UI.prototype.prepareCanvas = function() {
+        $(this.canvas).addClass('golem-stage');
         window.onresize = _.bind(this.resizeCanvas, this);
         this.resizeCanvas();
     };
-
+    
+    /**
+     * This method is bound to the window resize event automatically.
+     * 
+     * @returns {undefined}
+     */
     UI.prototype.resizeCanvas = function() {
         var options, canvas, width, height, aspectRatio, viewportWidth,
             viewportHeight, viewportAspect, viewportRatio;
