@@ -4,26 +4,39 @@ this.Golem = this.Golem || {};
 (function(window, document, _, undefined) {
     var Util = {};
     
-    Util.checkExists = function(dependencies, container) {
-        var properties, value, exists;
+    Util.checkExists = function(dependencies, container, silent) {
+        var properties, value, exists, complain;
+        
+        complain = function(dependency, exists) {
+            if (!silent && !exists) {
+                console.log(dependency + ' is undefined.');
+            }
+        };
+        value = container || window;
         
         if (_.isArray(dependencies)) {
             _.each(dependencies, function(single) {
-                this.checkExists(single, container);
+                properties = single.split('.');
+
+                _.each(properties, function(property) {
+                    value = value[property];
+                });
+
+                exists = !_.isUndefined(value);
+                complain(single, exists);
+                
+                // need to reset value for next iteration
+                value = container || window;
+                return exists;
             }, this);
         } else {
             properties = dependencies.split('.');
-            value = container || window;
-
             _.each(properties, function(property) {
                 value = value[property];
             });
-
+            
             exists = !_.isUndefined(value);
-
-            if (!exists) {
-                console.log(dependencies + ' is undefined.');
-            }
+            complain(dependencies, exists);
         }
         return exists;
     };
