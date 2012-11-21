@@ -29,7 +29,7 @@ this.Golem = this.Golem || {};
 
     UI.prototype.resizeCanvas = function() {
         var options, canvas, width, height, aspectRatio, viewportWidth,
-            viewportHeight, viewportAspect, viewportRatio, isWide;
+            viewportHeight, viewportAspect, viewportRatio;
         
         canvas = this.canvas;
         options = this.options;
