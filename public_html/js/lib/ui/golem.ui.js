@@ -14,17 +14,12 @@ this.Golem = this.Golem || {};
      */
     UI = function(options) {
         options = options || {};
-        this.canvas = options.canvas || this.createCanvas();
+        this.canvas = options.canvas || UI.createCanvas();
         
         this.options = _.extend({}, options, { canvas : undefined });
         
         window.onresize = _.bind(this.resizeCanvas, this);
         this.resizeCanvas();
-    };
-
-    UI.prototype.createCanvas = function() {
-        var c = document.createElement('canvas');
-        return c;
     };
 
     UI.prototype.resizeCanvas = function() {
@@ -59,5 +54,16 @@ this.Golem = this.Golem || {};
         this.height = height;
         
     };
+    
+    /**
+     * Creates a canvas element and returns it
+     * 
+     * @return DOMElement
+     */
+    UI.createCanvas = function() {
+        var c = document.createElement('canvas');
+        return c;
+    };
+
     _.extend(window.Golem, { UI : UI });
 }(this, document, _));
