@@ -4,12 +4,9 @@ $(function() {
     ]);
 
     loader.init(function() {
-        Golem.Util.checkExists([
-            'createjs.PreloadJS'
-        ]);
-        
-        var UI = new Golem.UI();
-        
-        $('body').append(UI.canvas);
+        if(Golem.Util.checkExists('createjs.PreloadJS')) {
+            var UI = new Golem.UI();
+            $('body').append(UI.canvas);
+        }
     });
 });
