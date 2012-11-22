@@ -45,20 +45,16 @@ describe('Golem.Util', function() {
             Test.on('someEvent', function() { });
             expect(Test._eventRegistry.someEvent).toBeDefined();
         });
-    
         it('can attach multiple callbacks to the same event', function() {
             Test.on('event1', function() { }).on('event1', function() { });
             
             // two keys are stored per event
             expect(Test._eventRegistry.event1.length).toBe(4);
         });
-        
         it('will trigger a bound callback if the event is emitted', function() {
             var k = false;
             Test.on('someEvent', function() { k = true; });
             Test.emit('someEvent');
-            
-            console.log(Test._eventRegistry);
             expect(k).toBe(true);
         });
     });
