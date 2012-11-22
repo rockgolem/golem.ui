@@ -2,8 +2,7 @@
 this.Golem = this.Golem || {};
 
 (function(window, document, _, undefined) {
-    var Util;
-    
+    var Util, logIfUndefined;
     
     Util = {};
     Util.checkExists = function(dependencies, container, silent) {
@@ -17,7 +16,7 @@ this.Golem = this.Golem || {};
                 });
 
                 exists = !_.isUndefined(value);
-                Util.logIfUndefined(single, exists, silent);
+                logIfUndefined(single, exists, silent);
                 
                 // need to reset value for next iteration
                 value = container || window;
@@ -29,7 +28,7 @@ this.Golem = this.Golem || {};
             });
             
             exists = !_.isUndefined(value);
-            Util.logIfUndefined(dependencies, exists, silent);
+            logIfUndefined(dependencies, exists, silent);
         }
         return exists;
     };
@@ -41,11 +40,13 @@ this.Golem = this.Golem || {};
      * @param {Boolean} exists
      * @returns {undefined}
      */
-    Util.logIfUndefined = function(dependency, exists, silent) {
+    logIfUndefined = function(dependency, exists, silent) {
         if (!silent && !exists) {
             console.log(dependency + ' is undefined.');
         }
     };
+
+
 
     _.extend(window.Golem, { Util : Util });
 }(this, document, _));
