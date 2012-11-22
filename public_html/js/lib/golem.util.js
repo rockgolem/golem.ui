@@ -148,7 +148,5 @@ this.Golem = this.Golem || {};
         }
     };
 
-
-
     _.extend(window.Golem, {Util: Util});
 }(this, document, _));
