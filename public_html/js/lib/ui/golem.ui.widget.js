@@ -83,6 +83,8 @@ this.Golem = this.Golem || {};
         /**
          * Used to add things to the collection.
          * 
+         * Index should be zero based.
+         * 
          * If index is an object, the row and column keys should *not* be zero
          * based, for example:
          * 
@@ -98,6 +100,7 @@ this.Golem = this.Golem || {};
             var list, oldItem, lastIndex, dimensions;
             
             lastIndex = this.lastIndex;
+            list = this.list;
             if (_.isObject(index)) {
                 dimensions = this.dimensions;
                 index = ((index.row - 1) * dimensions[1]) + index.column - 1;
