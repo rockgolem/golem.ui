@@ -18,7 +18,17 @@ this.Golem = this.Golem || {};
         this.options = _.extend({}, options, { canvas : undefined });
         this.prepareCanvas();
     };
-    
+
+    /**
+     * Used to add a new widget object to the UI stack
+     * 
+     * @param {type} widgetOptions
+     * @returns {undefined}
+     */
+    UI.prototype.addWidget = function(widgetOptions) {
+        
+    };
+
     /**
      * Some preparation styling and event binding.  Called by the constructor.
      * 
@@ -65,7 +75,6 @@ this.Golem = this.Golem || {};
         
         this.width = width;
         this.height = height;
-        
     };
     
     /**

@@ -28,19 +28,26 @@ this.Golem = this.Golem || {};
     /**
      * Used to add assets to the manifest.  Pass in a single Object, or an
      * Array of objects.  If the initial manifest is already loaded or has
-     * already started loading, this method handles it gracefully.
+     * already started loading--or if a callback is provided--this method
+     * will automatically load the asset.
      * 
      * Returns a boolean indicating if the manifest has already started loading.
      * 
      * @param {Mixed} manifest
+     * @param {Function} callback
      * @return Boolean
      */
-    Preload.prototype.addAsset = function(manifest) {
+    Preload.prototype.addAsset = function(manifest, callback) {
         var loaded = this.loaded;
+        
         if (_.isArray(manifest)) {
-            loaded ? p.loadManifest(manifest) : this.manifest + manifest;
+            this.manifest + manifest;
         } else {
-            loaded ? p.loadFile(manifest) : this.manifest.push(manifest);
+            this.manifest.push(manifest);
+        }
+    
+        if(loaded || _.isFunction(callback)) {
+            this.load(callback);
         }
         return loaded;
     };
@@ -52,18 +59,23 @@ this.Golem = this.Golem || {};
      * @returns void
      */
     Preload.prototype.init = function(callback) {
-        var p = this.p;
-        
-        if (this.loaded) {
-            console.log('Golem.Preload.init method should only be called once.');
-        } else {
-            p.loadManifest(this.manifest, false);
-            p.onComplete = this.getCallback(callback);
-            this.loaded = true;
+        this.p.onFileLoad = _.bind(this.handleFile, this);
+        this.load(callback);
+    };
 
-            p.onFileLoad = _.bind(this.handleFile, this);
-            p.load();
-        }
+    /**
+     * Loads whatever might be in the manifest, clears the manifest, and
+     * executes the callback when everything is finished.
+     * 
+     * @param {function} callback
+     * @returns {undefined}
+     */
+    Preload.prototype.load = function(callback) {
+        var p = this.p;
+        this.loaded = true;
+        p.onComplete = this.getCallback(callback);
+        p.loadManifest(this.manifest);
+        this.manifest = [];
     };
     
     /**
@@ -86,6 +98,12 @@ this.Golem = this.Golem || {};
         }
     };
     
+    /**
+     * Returns a wrapper function that will execute the callback only after the
+     * Preloaded resource is available.
+     * 
+     * @param {function} callback
+     */
     Preload.prototype.getCallback = function(callback) {
         var p = this.p
         callback = _.isFunction(callback) ? callback : function() {};
