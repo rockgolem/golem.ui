@@ -30,4 +30,36 @@ describe('Golem.Util', function() {
             expect(console.log).not.toHaveBeenCalledWith('WTF is undefined.');
         });
     });
+
+    describe('EventEmitter', function() {
+        var Test, Klass = function() { };
+        _.extend(Klass.prototype, Golem.Util.EventEmitter);
+        
+        Test = new Klass();
+        
+        afterEach(function() {
+            Test.off();
+        });
+    
+        it('can attach an eventRegistry to an object instance', function() {
+            Test.on('someEvent', function() { });
+            expect(Test._eventRegistry.someEvent).toBeDefined();
+        });
+    
+        it('can attach multiple callbacks to the same event', function() {
+            Test.on('event1', function() { }).on('event1', function() { });
+            
+            // two keys are stored per event
+            expect(Test._eventRegistry.event1.length).toBe(4);
+        });
+        
+        it('will trigger a bound callback if the event is emitted', function() {
+            var k = false;
+            Test.on('someEvent', function() { k = true; });
+            Test.emit('someEvent');
+            
+            console.log(Test._eventRegistry);
+            expect(k).toBe(true);
+        });
+    });
 });

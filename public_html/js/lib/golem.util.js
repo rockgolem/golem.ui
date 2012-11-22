@@ -51,9 +51,8 @@ this.Golem = this.Golem || {};
         if (_.isFunction(callback)) {
             events = events.split(separator);
             registry = this._eventRegistry || (this._eventRegistry = {});
-
-            _.each(registry, function(event) {
-                registry[event] || (registry[event] = []);
+            _.each(events, function(event) {
+                list = (registry[event] || (registry[event] = []));
                 list.push(callback, context);
             });
         }
@@ -104,7 +103,7 @@ this.Golem = this.Golem || {};
      * @returns {EventEmitter}
      */
     EventEmitter.emit = function(events) {
-        var event, registry, list, i, length, args, all, rest;
+        var registry, list, i, length, args, all, rest;
         
         registry = this._eventRegistry;
         
@@ -115,7 +114,7 @@ this.Golem = this.Golem || {};
                 rest[i - 1] = arguments[i];
             }
             
-            _.each(events, function() {
+            _.each(events, function(event) {
                 all = (registry.all || []).slice();
                 list = (registry[event] || []).slice();
                 if (list.length) {
