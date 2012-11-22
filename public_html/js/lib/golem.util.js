@@ -5,7 +5,7 @@ this.Golem = this.Golem || {};
     var Util = {};
     
     Util.checkExists = function(dependencies, container, silent) {
-        var properties, value, exists, complain;
+        var value, exists, complain;
         
         complain = function(dependency, exists) {
             if (!silent && !exists) {
@@ -16,9 +16,7 @@ this.Golem = this.Golem || {};
         
         if (_.isArray(dependencies)) {
             _.each(dependencies, function(single) {
-                properties = single.split('.');
-
-                _.each(properties, function(property) {
+                _.each(single.split('.'), function(property) {
                     value = value[property];
                 });
 
@@ -30,8 +28,7 @@ this.Golem = this.Golem || {};
                 return exists;
             }, this);
         } else {
-            properties = dependencies.split('.');
-            _.each(properties, function(property) {
+            _.each(dependencies.split('.'), function(property) {
                 value = value[property];
             });
             
