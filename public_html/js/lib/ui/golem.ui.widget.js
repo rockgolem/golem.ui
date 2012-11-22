@@ -58,6 +58,8 @@ this.Golem = this.Golem || {};
             
             if (newList.length > lastIndex) {
                 this.addToOverflow(newList.splice(lastIndex));
+            } else {
+                newList.length = lastIndex + 1;
             }
             this.list = newList;
             return this;
@@ -97,13 +99,22 @@ this.Golem = this.Golem || {};
          * @returns Collection
          */
         Collection.prototype.add = function(item, index) {
-            var list, oldItem, lastIndex, dimensions;
+            var list, oldItem, lastIndex, dimensions, i, length;
             
             lastIndex = this.lastIndex;
             list = this.list;
             if (_.isObject(index)) {
                 dimensions = this.dimensions;
                 index = ((index.row - 1) * dimensions[1]) + index.column - 1;
+            } else if (_.isUndefined(index)) {
+                index = -1;
+                length = list.length;
+                for (i = 0; i <= length; ++i) {
+                    if (_.isUndefined(list[i])) {
+                        index = i;
+                        break;
+                    }
+                }
             }
             if (index <= lastIndex) {
                 oldItem = list[index];
