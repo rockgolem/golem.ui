@@ -1,6 +1,6 @@
 describe('Golem.Util', function() {
     describe('checkExists utility', function() {
-        console.log('Seeing a couple of "something is undefined" logs below is normal.');
+        console.log('"something is undefined" logs below are a normal part of the unit tests.');
         it('verifies a property exists', function() {
             expect(Golem.Util.checkExists('prop', { prop : 'exists' })).toBe(true);
         });

@@ -18,9 +18,13 @@ describe('Golem.UI.Widget', function() {
             });
         });
         describe('add', function() {
+            it('places an item at a specified index', function() {
+                C.add('c', 2);
+                expect(C.list[2]).toBe('c');
+            });
             it('places an item in an undefined index if no index is specified', function() {
-                C.add('c').add('d');
-                expect(_.contains(C.list, 'c') && _.contains(C.list, 'd')).toBe(true);
+                C.add('d').add('e');
+                expect(_.contains(C.list, 'd') && _.contains(C.list, 'e')).toBe(true);
             });
         });
         describe('addToOverflow', function() {
