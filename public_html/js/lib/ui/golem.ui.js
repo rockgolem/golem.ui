@@ -17,6 +17,7 @@ this.Golem = this.Golem || {};
         this.canvas = options.canvas || UI.createCanvas();
         this.options = _.extend({}, options, { canvas : undefined });
         this.prepareCanvas();
+        this.loadStage();
     };
 
     /**
@@ -27,6 +28,16 @@ this.Golem = this.Golem || {};
      */
     UI.prototype.addWidget = function(widgetOptions) {
         
+    };
+
+    /**
+     * Prepares the EaselJS Stage
+     */
+    UI.prototype.loadStage = function() {
+        var canvas = this.canvas;
+        if (canvas) {
+            this.stage = new createjs.Stage(canvas);
+        }
     };
 
     /**

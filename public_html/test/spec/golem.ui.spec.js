@@ -21,6 +21,10 @@ describe('Golem.UI', function() {
             expect(UI_NoOptions.canvas.width).toBeGreaterThan(0);
             expect(UI_NoOptions.canvas.height).toBeGreaterThan(0);
         });
+    
+        it('creates an EaselJS stage', function() {
+            expect(UI_NoOptions.stage instanceof createjs.Stage).toBe(true);
+        });
     });
     
     describe('createCanvas', function() {
