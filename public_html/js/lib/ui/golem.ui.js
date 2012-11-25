@@ -31,13 +31,16 @@ this.Golem = this.Golem || {};
     };
 
     /**
-     * Prepares the EaselJS Stage
+     * Prepares the EaselJS Stage.  Can be passed in.
+     * 
+     * @param {Stage} stage
      */
-    UI.prototype.loadStage = function() {
+    UI.prototype.loadStage = function(stage) {
         var canvas = this.canvas;
         if (canvas) {
-            this.stage = new createjs.Stage(canvas);
+            stage = stage || options.stage || new createjs.Stage(canvas);
         }
+        this.stage = stage;
     };
 
     /**
