@@ -13,6 +13,9 @@ this.Golem = this.Golem || {};
      * @param {Object} options
      */
     UI = function(options) {
+        
+        this.widgets = [];
+        
         options = options || {};
         this.canvas = options.canvas || UI.createCanvas();
         this.options = _.extend({}, options, { canvas : undefined });
