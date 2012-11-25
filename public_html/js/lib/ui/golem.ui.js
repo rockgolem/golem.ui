@@ -2,7 +2,7 @@
 this.Golem = this.Golem || {};
 
 (function(window, document, _, undefined) {
-    var UI;
+    var UI, tick;
     
     /**
      * Golem.UI
@@ -18,6 +18,7 @@ this.Golem = this.Golem || {};
         this.options = _.extend({}, options, { canvas : undefined });
         this.prepareCanvas();
         this.loadStage();
+        this.startTicker();
     };
 
     /**
@@ -38,7 +39,7 @@ this.Golem = this.Golem || {};
     UI.prototype.loadStage = function(stage) {
         var canvas = this.canvas;
         if (canvas) {
-            stage = stage || options.stage || new createjs.Stage(canvas);
+            stage = stage || this.options.stage || new createjs.Stage(canvas);
         }
         this.stage = stage;
     };
@@ -89,6 +90,24 @@ this.Golem = this.Golem || {};
         
         this.width = width;
         this.height = height;
+    };
+    
+    /**
+     * Private method called on the Ticker to update the UI.
+     */
+    tick = function(elapsed, isPaused) {
+        this.stage.update();
+    };
+    
+    /**
+     * 
+     * @returns {undefined}
+     */
+    UI.prototype.startTicker = function() {
+        var Ticker = createjs.Ticker;
+        Ticker.useRAF = true;
+        Ticker.setFPS(60);
+        Ticker.addListener(_.bind(tick, this));
     };
     
     /**
