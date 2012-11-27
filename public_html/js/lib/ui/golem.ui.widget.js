@@ -13,7 +13,9 @@ this.Golem = this.Golem || {};
          * @constructor
          * @extends EventEmitter
          */
-        Widget = function() {};
+        Widget = function() {
+            this.position = Object.seal({ x : 0, y : 0 });
+        };
         Widget.prototype = Object.create(Golem.Util.EventEmitter);
         
         /**
@@ -28,13 +30,22 @@ this.Golem = this.Golem || {};
             return widget;
         };
         
-        
         /**
-         * Overwrite this method to deal with rendering
+         * Updates the widget position
+         * 
+         * @param {Number} x
+         * @param {Number} y
          */
-        Widget.prototype.render = function() { };
-        
+        Widget.prototype.setPosition = function(x, y) {
+            var p = this.position;
+            p.x = x,
+            p.y = y;
+            return p;
+        };
+
         /**
+         * Collection is a base class for button containers, inventory
+         * containers, and menu docks (not to be confused with the Menu class).
          * 
          * @constructor
          * @extends Widget
@@ -113,7 +124,7 @@ this.Golem = this.Golem || {};
          * @returns Collection
          */
         Collection.prototype.add = function(item, index) {
-            var list, oldItem, lastIndex, dimensions, i, length;
+            var list, oldItem, lastIndex, dimensions, i, length, event;
             
             lastIndex = this.lastIndex;
             list = this.list;
@@ -130,27 +141,21 @@ this.Golem = this.Golem || {};
                     }
                 }
             }
+        
+            event = {
+                item : item,
+                index : index,
+                lastIndex : lastIndex
+            };
             if (index <= lastIndex) {
                 oldItem = list[index];
                 list[index] = item;
-                this.emit('add', {
-                    item : item,
-                    index : index,
-                    replaced : oldItem
-                });
-                if (oldItem) {
-                    this.emit('remove', {
-                        index : index,
-                        replaced : oldItem
-                    });
-                }
+                _.extend(event, { type : 'add', replaced : oldItem });
             } else {
-                this.emit('outOfBounds', {
-                    item : item,
-                    attemptedIndex : index,
-                    LastIndex : lastIndex
-                });
+                _.extend(event, { type : 'outOfBounds' });
             }
+            
+            this.emit(event.type, event);
             return this;
         };
         
@@ -159,9 +164,15 @@ this.Golem = this.Golem || {};
          * @constructor
          * @extends Collection
          */
-        ButtonBar = function() {};
+        ButtonBar = function() {
+            this.buttons = [];
+        };
         ButtonBar.prototype = Object.create(Collection.prototype);
-
+        
+        ButtonBar.prototype.render = function() {
+            
+        };
+        
         /**
          * 
          * @constructor
