@@ -24,23 +24,42 @@ this.Golem = this.Golem || {};
          * @static
          */
         Widget.buildWidget = function(options) {
-            var widget = new definitions[options.type]();
+            var widget = new definitions[options.type](options);
             return widget;
         };
+    
+        /**
+         * Placeholder render method for all widgets.  Typically overwritten.
+         * 
+         * @returns {undefined}
+         */
+        Widget.prototype.render = function() { };
     
         /**
          * Flags the widget as a DOM object type, and creates the element and
          * Easel class required.  Typically used internally.
          * 
+         * @param {Object} options
          * @returns {createjs.DOMElement}
          */
-        Widget.prototype.setupHTML = function() {
-            var el = document.createElement('div');
+        Widget.prototype.setupHTML = function(options) {
+            var el, displayObject, classes = ['golem-widget'];
             
-            $(el).addClass('golem-widget');
+            classes = classes.concat(options.classes);
+            if (options.className) {
+                classes.push(options.className);
+            }
+            
+            el = document.createElement('div');
+            $(el).addClass(classes.join(' '));
+            
+            displayObject = new createjs.DOMElement(el);
+            displayObject.x = options.x || 0;
+            displayObject.x = options.y || 0;
             
             this.isHTML = true;
-            this.displayObject = new createjs.DOMElement(el);
+            this.el = el;
+            this.displayObject = displayObject;
         };
 
         /**
@@ -164,14 +183,23 @@ this.Golem = this.Golem || {};
          * @constructor
          * @extends Collection
          */
-        ButtonBar = function() {
-            this.setupHTML();
-            this.buttons = [];
+        ButtonBar = function(options) {
+            options = _.extend({
+                classes : ['golem-container', 'golem-button-bar']
+            }, options);
+            
+            this.parent = $(options.parent || 'body');
+            this.setupHTML(options);
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
         
+        /**
+         * Appends the container DOM element to the parent.
+         * 
+         * @returns {undefined}
+         */
         ButtonBar.prototype.render = function() {
-            
+            $(this.el).appendTo(this.parent);
         };
         
         /**

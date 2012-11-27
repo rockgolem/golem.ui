@@ -64,6 +64,12 @@ this.Golem = this.Golem || {};
         window.onresize = _.bind(this.resizeCanvas, this);
         this.resizeCanvas();
     };
+
+    UI.prototype.renderWidgets = function() {
+        _.each(this.widgets, function(widget) {
+            widget.render();
+        });
+    };
     
     /**
      * This method is bound to the window resize event automatically.

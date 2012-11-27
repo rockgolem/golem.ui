@@ -75,7 +75,6 @@ this.Golem = this.Golem || {};
         this.loaded = true;
         p.onComplete = this.getCallback(callback);
         p.loadManifest(this.manifest);
-        this.manifest = [];
     };
     
     /**
@@ -105,7 +104,7 @@ this.Golem = this.Golem || {};
      * @param {function} callback
      */
     Preload.prototype.getCallback = function(callback) {
-        var p = this.p
+        var p = this.p;
         callback = _.isFunction(callback) ? callback : function() {};
         return _.bind(function() {
             var loaded = _.all(this.manifest, function(file) {
@@ -115,8 +114,8 @@ this.Golem = this.Golem || {};
                 });
                 return !_.isUndefined(lib);
             }, this);
-        
             if (loaded) {
+                this.manifest = [];
                 callback();
             } else {
                 setTimeout(_.bind(function() { this.getCallback(callback)(); }, this), 1);

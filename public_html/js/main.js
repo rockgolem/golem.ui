@@ -9,10 +9,17 @@ $(function() {
             src : '/js/lib/ui/golem.ui.widget.js'
         }, function() {
             var ui = new Golem.UI();
-            console.log(Golem.UI.Widget);
             $('body').append(ui.canvas);
             
-            ui.addWidget({ type : 'ButtonBar' });
+            ui.addWidget({
+                type : 'ButtonBar',
+                className : 'skill-bar',
+                parent : 'body',
+                x : 100,
+                y : 100
+            });
+        
+            ui.renderWidgets();
         });
     });
 });
