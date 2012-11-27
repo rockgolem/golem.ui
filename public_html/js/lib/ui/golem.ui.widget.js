@@ -14,7 +14,7 @@ this.Golem = this.Golem || {};
          * @extends EventEmitter
          */
         Widget = function() {
-            this.position = Object.seal({ x : 0, y : 0 });
+           // this.position = Object.seal({ x : 0, y : 0 });
         };
         Widget.prototype = Object.create(Golem.Util.EventEmitter);
         
@@ -36,11 +36,22 @@ this.Golem = this.Golem || {};
          * @param {Number} x
          * @param {Number} y
          */
-        Widget.prototype.setPosition = function(x, y) {
+       /* Widget.prototype.setPosition = function(x, y) {
             var p = this.position;
             p.x = x,
             p.y = y;
             return p;
+        };*/
+    
+        /**
+         * Flags the widget as a DOM object type, and creates the element and
+         * Easel class required.  Typically used internally.
+         * 
+         * @returns {createjs.DOMElement}
+         */
+        Widget.prototype.setupHTML = function() {
+            var el = document.createElement('div');
+            this.displayObject = new createjs.DOMElement(el);
         };
 
         /**
