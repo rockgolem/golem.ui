@@ -2,7 +2,7 @@ describe('Golem.UI.Widget', function() {
     describe('Collection', function() {
         var C;
         beforeEach(function() {
-            C = new Golem.UI.Widget.Collection();
+            C = Golem.UI.Widget.buildWidget({ type : 'Collection' });
         });
         describe('setDimensions', function() {
             it('updates the list length', function() {

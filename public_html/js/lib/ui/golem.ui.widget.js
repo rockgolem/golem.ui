@@ -2,7 +2,8 @@
 this.Golem = this.Golem || {};
 
 (function(window, _, undefined) {
-    var Widget, Collection, Data, Menu, Utility, ButtonBar;
+    var Widget, Collection, Data, Menu, Utility, ButtonBar, definitions;
+    
     if (Golem.Util.checkExists('Golem.UI')) {
         
         /**
@@ -14,6 +15,19 @@ this.Golem = this.Golem || {};
          */
         Widget = function() {};
         Widget.prototype = Object.create(Golem.Util.EventEmitter);
+        
+        /**
+         * Factory for building widgets
+         * 
+         * @param {Object} options
+         * @returns {Widget}
+         * @static
+         */
+        Widget.buildWidget = function(options) {
+            var widget = new definitions[options.type]();
+            return widget;
+        };
+        
         
         /**
          * Overwrite this method to deal with rendering
@@ -140,7 +154,6 @@ this.Golem = this.Golem || {};
             return this;
         };
         
-        
         /**
          * 
          * @constructor
@@ -148,12 +161,7 @@ this.Golem = this.Golem || {};
          */
         ButtonBar = function() {};
         ButtonBar.prototype = Object.create(Collection.prototype);
-        
-        /**
-         * Assigning the collection definitions.
-         */
-        Collection.ButtonBar = ButtonBar;
-        
+
         /**
          * 
          * @constructor
@@ -177,14 +185,20 @@ this.Golem = this.Golem || {};
          */
         Utility = function() {};
         Utility.prototype = Object.create(Widget.prototype);
-        
+
         /**
-         * Assigning the definitions to the parent object
-         */
-        Widget.Data = Data;
-        Widget.Menu = Menu;
-        Widget.Utility = Utility;
-        Widget.Collection = Collection;
+        * Container holding private constructor definitions for the Widget
+        * factory.
+        * 
+        * @type {Object}
+        */
+        definitions = {
+            Collection : Collection,
+                ButtonBar : ButtonBar,
+            Data : Data,
+            Menu : Menu,
+            Utility : Utility
+        };
         
         /**
          * Expose Widgets to the Golem namespace.

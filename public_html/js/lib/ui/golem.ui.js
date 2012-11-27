@@ -25,13 +25,17 @@ this.Golem = this.Golem || {};
     };
 
     /**
-     * Used to add a new widget object to the UI stack
+     * Used to add a new widget object to the UI stack.  Typically you should
+     * pass in a hash of params and this will pass those params to a widget
+     * factory.  But, if you already have a constructed widget, you can pass
+     * that instead.
      * 
-     * @param {type} widgetOptions
+     * @param {Mixed} obj Hash of options or a Widget
      * @returns {undefined}
      */
-    UI.prototype.addWidget = function(widgetOptions) {
-        
+    UI.prototype.addWidget = function(obj) {
+        var W = UI.Widget;
+        this.widgets.push(obj instanceof W ? obj : W.buildWidget(obj));
     };
 
     /**
