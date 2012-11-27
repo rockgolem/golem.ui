@@ -34,8 +34,11 @@ this.Golem = this.Golem || {};
      * @returns {undefined}
      */
     UI.prototype.addWidget = function(obj) {
-        var W = UI.Widget;
-        this.widgets.push(obj instanceof W ? obj : W.buildWidget(obj));
+        var W = UI.Widget, wid;
+        wid = obj instanceof W ? obj : W.buildWidget(obj);
+        this.widgets.push(wid);
+        
+        this.stage.addChild(wid.displayObject);
     };
 
     /**

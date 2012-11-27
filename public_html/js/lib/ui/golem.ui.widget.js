@@ -13,9 +13,7 @@ this.Golem = this.Golem || {};
          * @constructor
          * @extends EventEmitter
          */
-        Widget = function() {
-           // this.position = Object.seal({ x : 0, y : 0 });
-        };
+        Widget = function() { };
         Widget.prototype = Object.create(Golem.Util.EventEmitter);
         
         /**
@@ -29,19 +27,6 @@ this.Golem = this.Golem || {};
             var widget = new definitions[options.type]();
             return widget;
         };
-        
-        /**
-         * Updates the widget position
-         * 
-         * @param {Number} x
-         * @param {Number} y
-         */
-       /* Widget.prototype.setPosition = function(x, y) {
-            var p = this.position;
-            p.x = x,
-            p.y = y;
-            return p;
-        };*/
     
         /**
          * Flags the widget as a DOM object type, and creates the element and
@@ -51,6 +36,10 @@ this.Golem = this.Golem || {};
          */
         Widget.prototype.setupHTML = function() {
             var el = document.createElement('div');
+            
+            $(el).addClass('golem-widget');
+            
+            this.isHTML = true;
             this.displayObject = new createjs.DOMElement(el);
         };
 
@@ -176,6 +165,7 @@ this.Golem = this.Golem || {};
          * @extends Collection
          */
         ButtonBar = function() {
+            this.setupHTML();
             this.buttons = [];
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
