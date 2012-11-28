@@ -8,7 +8,7 @@ $(function() {
             id : 'Golem.UI.Widget',
             src : '/js/lib/ui/golem.ui.widget.js'
         }, function() {
-            var body, ui
+            var body, ui;
             
             ui = new Golem.UI();
             body = $('body');
