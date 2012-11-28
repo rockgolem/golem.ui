@@ -41,7 +41,7 @@ this.Golem = this.Golem || {};
         var loaded = this.loaded;
         
         if (_.isArray(manifest)) {
-            this.manifest + manifest;
+            this.manifest = this.manifest.concat(manifest);
         } else {
             this.manifest.push(manifest);
         }
