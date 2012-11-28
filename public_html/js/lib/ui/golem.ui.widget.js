@@ -189,9 +189,38 @@ this.Golem = this.Golem || {};
             }, options);
             
             this.parent = $(options.parent || 'body');
+            this.buttons = [];
+            
+            this.setDimensions(options.rows || 1, options.columns || 4);
             this.setupHTML(options);
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
+        
+        /**
+         * ButtonBars always have a button object in every space.  This button
+         * object keeps track of state, like "empty" or not
+         * 
+         * @returns {undefined}
+         */
+        ButtonBar.prototype.setDimensions = function(rows, columns) {
+            var length, list, i;
+            
+            /**
+             * First, prepare the collection
+             */
+            Collection.prototype.setDimensions.call(this, rows, columns);
+            
+            /**
+             * Now fill in any missing buttons
+             */
+            list = this.list;
+            length = list.length;
+            for(i = 0; i < length; i++) {
+                if (_.isUndefined(list[i])) {
+                    list[i] = new Button();
+                }
+            }
+        };
         
         /**
          * Appends the container DOM element to the parent.
@@ -199,7 +228,36 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         ButtonBar.prototype.render = function() {
-            $(this.el).appendTo(this.parent);
+            var $el = $(this.el);
+            
+            _.each(this.list, function(button) {
+                button.render();
+                $el.append(button.el);
+            });
+            
+            this.parent.append($el);
+        };
+    
+        /**
+         * Object used by ButtonBars to track button state
+         * 
+         * @returns {undefined}
+         */
+        Button = function() {
+            this.setup();
+        };
+        Button.prototype = Object.create(Golem.Util.EventEmitter);
+        
+        Button.prototype.render = function() {
+            
+        };
+    
+        Button.prototype.setup = function() {
+            var el = document.createElement('div');
+            
+            $(el).addClass('golem-button');
+            
+            this.el = el;
         };
         
         /**

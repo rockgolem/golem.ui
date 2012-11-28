@@ -20,7 +20,9 @@ $(function() {
                 className : 'skill-bar',
                 parent : body,
                 x : 100,
-                y : 100
+                y : 100,
+                rows : 1,
+                columns : 4
             });
         
             ui.render();
