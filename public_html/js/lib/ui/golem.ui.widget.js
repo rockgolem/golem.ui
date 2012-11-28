@@ -61,6 +61,18 @@ this.Golem = this.Golem || {};
             this.el = el;
             this.displayObject = displayObject;
         };
+        
+        /**
+         * Some widgets need a spritesheet.  This creates it.
+         * 
+         * @param {type} options
+         * @returns {undefined}
+         */
+        Widget.prototype.setupSpriteSheet = function(options) {
+            if (!_.isUndefined(options)) {
+                this.spriteSheet = new createjs.SpriteSheet(options);
+            };
+        };
 
         /**
          * Collection is a base class for button containers, inventory
@@ -142,13 +154,12 @@ this.Golem = this.Golem || {};
          * @returns Collection
          */
         Collection.prototype.add = function(item, index) {
-            var list, oldItem, lastIndex, dimensions, i, length, event;
+            var list, oldItem, lastIndex, i, length, event;
             
             lastIndex = this.lastIndex;
             list = this.list;
             if (_.isObject(index)) {
-                dimensions = this.dimensions;
-                index = ((index.row - 1) * dimensions[1]) + index.column - 1;
+                index = this.getPosition(index);
             } else if (_.isUndefined(index)) {
                 index = -1;
                 length = list.length;
@@ -185,13 +196,35 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         Collection.prototype.get = function(index) {
-            var item, dimensions;
+            var item;
             if (_.isObject(index)) {
-                dimensions = this.dimensions;
-                index = ((index.row - 1) * dimensions[1]) + index.column - 1;
+                index = this.getPosition(index);
             }
             item = this.list[index];
             return item;
+        };
+        
+        /**
+         * Get the row / column based on an index value, or vice versa
+         * 
+         * @param {Mixed} index
+         * @returns {Object}
+         */
+        Collection.prototype.getPosition = function(index) {
+            var columns, row, value;
+            
+            columns = this.dimensions[1];
+            
+            if (_.isObject(index)) {
+                value = ((index.row - 1) * columns) + index.column - 1;
+            } else {
+                row = Math.ceil(index / columns);
+                value = {
+                    row : row,
+                    column : (index - ((row - 1) * columns)) + 1
+                };
+            }
+            return value;
         };
         
         /**
@@ -209,6 +242,7 @@ this.Golem = this.Golem || {};
             this.buttons = [];
             
             this.setDimensions(options.rows || 1, options.columns || 4);
+            this.setupSpriteSheet(options.spriteSheet);
             this.setupHTML(options);
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
@@ -222,21 +256,24 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         ButtonBar.prototype.setDimensions = function(rows, columns) {
-            var length, list, i;
-            
-            /**
-             * First, prepare the collection
-             */
             Collection.prototype.setDimensions.call(this, rows, columns);
+            this.setupButtons();
+        };
+    
+        ButtonBar.prototype.setupButtons = function() {
+            var length, list, i, displayObject, b, spriteSheet;
             
-            /**
-             * Now fill in any missing buttons
-             */
+            displayObject = this.displayObject;
             list = this.list;
             length = list.length;
             for(i = 0; i < length; i++) {
                 if (_.isUndefined(list[i])) {
-                    this.add(new Button(), i);
+                    b = new Button();
+                    this.add(b, i);
+                    b.setPosition(i, this.dimensions);
+                    if (displayObject) {
+                        displayObject.addChild(b.displayObject);
+                    }
                 }
             }
         };
@@ -270,13 +307,25 @@ this.Golem = this.Golem || {};
         Button.prototype.render = function() {
             
         };
-    
+        
+        /**
+         * 
+         * @param {number} index
+         * @param {Array} dimensions
+         * @returns {undefined}
+         */
+        Button.prototype.setPosition = function(index, dimensions) {
+            var position = this.getPosition(index);
+            
+        };
+        
         Button.prototype.setup = function() {
             var el = document.createElement('div');
             
             $(el).addClass('golem-button');
             
             this.el = el;
+            this.displayObject = new createjs.DOMElement(el);
         };
         
         /**

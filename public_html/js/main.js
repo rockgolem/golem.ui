@@ -22,9 +22,19 @@ $(function() {
                 x : 100,
                 y : 100,
                 rows : 1,
-                columns : 4
+                columns : 4,
+                spriteSheet : {
+                    images : ['/img/example-skills.jpg'],
+                    width : 50,
+                    height : 50,
+                    animations : {
+                        '1' : [0, 0, false],
+                        '2' : [1, 1, false],
+                        '3' : [2, 2, false],
+                        '4' : [3, 3, false]
+                    }
+                }
             });
-        
             ui.render();
         });
     });

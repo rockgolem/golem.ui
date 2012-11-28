@@ -114,6 +114,7 @@ this.Golem = this.Golem || {};
                 });
                 return !_.isUndefined(lib);
             }, this);
+        
             if (loaded) {
                 this.manifest = [];
                 callback();

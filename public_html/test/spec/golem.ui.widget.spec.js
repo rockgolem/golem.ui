@@ -41,5 +41,18 @@ describe('Golem.UI.Widget', function() {
                 expect(C.get({ row : 1, column : 3})).toBe('item');
             });
         });
+        describe('getPosition', function() {
+            it('returns an object with the row / column if passed an index', function() {
+                var p;
+                C.setDimensions(5,14);
+                p = C.getPosition(63);
+                expect(p.row).toBe(5);
+                expect(p.column).toBe(8);
+            });
+            it('returns an index if passed an object with the row / column', function() {
+                C.setDimensions(5,14);
+                expect(C.getPosition({ row : 5, column : 3})).toBe(58);
+            });
+        });
     });
 });
