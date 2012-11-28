@@ -176,6 +176,23 @@ this.Golem = this.Golem || {};
             this.emit(event.type, event);
             return this;
         };
+    
+        /**
+         * Used to retrieve the item in either a zero based index, or a 1 based
+         * row/column coordinate
+         * 
+         * @param {Mixed} index numeric index or { row : #, column : # }
+         * @returns {undefined}
+         */
+        Collection.prototype.get = function(index) {
+            var item, dimensions;
+            if (_.isObject(index)) {
+                dimensions = this.dimensions;
+                index = ((index.row - 1) * dimensions[1]) + index.column - 1;
+            }
+            item = this.list[index];
+            return item;
+        };
         
         /**
          * ButtonBar is useful for things like skill buttons.
