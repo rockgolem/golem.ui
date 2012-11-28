@@ -140,6 +140,7 @@ this.Golem = this.Golem || {};
      * 
      * @param {String} dependency
      * @param {Boolean} exists
+     * @param {Boolean} silent
      * @returns {undefined}
      */
     logIfUndefined = function(dependency, exists, silent) {

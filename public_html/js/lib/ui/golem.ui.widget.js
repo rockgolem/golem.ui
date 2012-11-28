@@ -217,6 +217,8 @@ this.Golem = this.Golem || {};
          * ButtonBars always have a button object in every space.  This button
          * object keeps track of state, like "empty" or not
          * 
+         * @param {Number} rows
+         * @param {Number} columns
          * @returns {undefined}
          */
         ButtonBar.prototype.setDimensions = function(rows, columns) {
@@ -234,7 +236,7 @@ this.Golem = this.Golem || {};
             length = list.length;
             for(i = 0; i < length; i++) {
                 if (_.isUndefined(list[i])) {
-                    list[i] = new Button();
+                    this.add(new Button(), i);
                 }
             }
         };
