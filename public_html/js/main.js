@@ -8,13 +8,17 @@ $(function() {
             id : 'Golem.UI.Widget',
             src : '/js/lib/ui/golem.ui.widget.js'
         }, function() {
-            var ui = new Golem.UI();
-            $('body').append(ui.canvas);
+            var body, ui
+            
+            ui = new Golem.UI();
+            body = $('body');
+            
+            body.append(ui.canvas);
             
             ui.addWidget({
                 type : 'ButtonBar',
                 className : 'skill-bar',
-                parent : 'body',
+                parent : body,
                 x : 100,
                 y : 100
             });
