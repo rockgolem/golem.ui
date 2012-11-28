@@ -1,5 +1,5 @@
 describe('Golem.Util', function() {
-    describe('checkExists utility', function() {
+    describe('checkExists', function() {
         console.log('"something is undefined" logs below are a normal part of the unit tests.');
         it('verifies a property exists', function() {
             expect(Golem.Util.checkExists('prop', { prop : 'exists' })).toBe(true);
@@ -56,6 +56,28 @@ describe('Golem.Util', function() {
             Test.on('someEvent', function() { k = true; });
             Test.emit('someEvent');
             expect(k).toBe(true);
+        });
+        it('will only trigger each callback once', function() {
+            var a = 0, b = 0;
+            Test.on('eventA', function() { a++; })
+                .on('eventB', function() { b++; });
+            Test.emit('eventA').emit('eventB');
+            expect(a).toBe(1);
+            expect(b).toBe(1);
+        });
+        it('can bind to multiple events for the same callback', function() {
+            var k = 0;
+            Test.on('event1 event2', function() { k++; });
+            Test.emit('event1');
+            Test.emit('event2');
+            expect(k).toBe(2);
+        });
+        it('can emit two events in a single call', function() {
+            var k = 0;
+            Test.on('event1', function() { k++; });
+            Test.on('event2', function() { k++; });
+            Test.emit('event1 event2');
+            expect(k).toBe(2);
         });
     });
 });
