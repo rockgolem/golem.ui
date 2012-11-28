@@ -43,15 +43,16 @@ this.Golem = this.Golem || {};
          * @returns {createjs.DOMElement}
          */
         Widget.prototype.setupHTML = function(options) {
-            var el, displayObject, classes = ['golem-widget'];
+            var el, $el, displayObject, classes;
             
-            classes = classes.concat(options.classes);
+            classes = ['golem-widget'].concat(options.classes);
             if (options.className) {
                 classes.push(options.className);
             }
             
             el = document.createElement('div');
-            $(el).addClass(classes.join(' '));
+            $el = $(el);
+            $el.addClass(classes.join(' '));
             
             displayObject = new createjs.DOMElement(el);
             displayObject.x = options.x || 0;
@@ -218,11 +219,15 @@ this.Golem = this.Golem || {};
             if (_.isObject(index)) {
                 value = ((index.row - 1) * columns) + index.column - 1;
             } else {
-                row = Math.ceil(index / columns);
-                value = {
-                    row : row,
-                    column : (index - ((row - 1) * columns)) + 1
-                };
+                if (index === 0) {
+                    value = { row : 1, column : 1 };
+                } else {
+                    row = Math.ceil(index / columns);
+                    value = {
+                        row : row,
+                        column : (index - ((row - 1) * columns)) + 1
+                    };
+                }
             }
             return value;
         };
@@ -232,6 +237,7 @@ this.Golem = this.Golem || {};
          * 
          * @constructor
          * @extends Collection
+         * @param {Object} options
          */
         ButtonBar = function(options) {
             options = _.extend({
@@ -284,12 +290,22 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         ButtonBar.prototype.render = function() {
-            var $el = $(this.el);
+            var $el, spriteSheet, dimensions;
             
-            _.each(this.list, function(button) {
-                button.render();
+            $el = $(this.el);
+            spriteSheet = this.spriteSheet;
+            dimensions = this.dimensions;
+            
+            if (spriteSheet) {
+               $el.css({
+                   height : spriteSheet._frameHeight * dimensions[0],
+                   width  : spriteSheet._frameWidth * dimensions[1]
+               }); 
+            }
+            _.each(this.list, function(button, index) {
+                button.render(spriteSheet, index, this.getPosition(index));
                 $el.append(button.el);
-            });
+            }, this);
             
             this.parent.append($el);
         };
@@ -304,8 +320,37 @@ this.Golem = this.Golem || {};
         };
         Button.prototype = Object.create(Golem.Util.EventEmitter);
         
-        Button.prototype.render = function() {
+        /**
+         * Styles the button graphic.  This is called by the ButtonBar render
+         * method, no need to call it yourself.
+         * 
+         * @param {SpriteSheet} spriteSheet
+         * @param {Number} index
+         * @param {Object} position
+         * @returns {undefined}
+         */
+        Button.prototype.render = function(spriteSheet, index, position) {
+            var data, img, rect, width, height;
             
+            data = spriteSheet._frames[index];
+            img = data.image;
+            rect = data.rect;
+            width = rect.width;
+            height = rect.height;
+            
+            $(this.el).css({
+                width : width.toString() + 'px',
+                height : height.toString() + 'px',
+                top : (position.row - 1) * height,
+                left : (position.column - 1) * width,
+                background : [
+                    "url('" + img.src + "')",
+                    (-rect.x).toString() + 'px',
+                    (-rect.y).toString() + 'px',
+                    'no-repeat',
+                    'transparent'
+                ].join(' ')
+            });
         };
         
         /**
@@ -315,7 +360,7 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         Button.prototype.setPosition = function(index, dimensions) {
-            var position = this.getPosition(index);
+            //var position = this.getPosition(index);
             
         };
         

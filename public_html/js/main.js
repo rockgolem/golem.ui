@@ -22,11 +22,13 @@ $(function() {
                 x : 100,
                 y : 100,
                 rows : 1,
-                columns : 4,
+                columns : 6,
                 spriteSheet : {
                     images : ['/img/example-skills.jpg'],
-                    width : 50,
-                    height : 50,
+                    frames : {
+                        width : 50,
+                        height : 50
+                    },
                     animations : {
                         '1' : [0, 0, false],
                         '2' : [1, 1, false],
@@ -35,6 +37,8 @@ $(function() {
                     }
                 }
             });
+        
+            XX = ui.widgets[0].spriteSheet;
             ui.render();
         });
     });

@@ -53,6 +53,13 @@ describe('Golem.UI.Widget', function() {
                 C.setDimensions(5,14);
                 expect(C.getPosition({ row : 5, column : 3})).toBe(58);
             });
+            it('returns the proper row and column for index 0', function() {
+                var p;
+                C.setDimensions(1,6);
+                p = C.getPosition(0);
+                expect(p.row).toBe(1);
+                expect(p.column).toBe(1);
+            });
         });
     });
 });
