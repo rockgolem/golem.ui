@@ -2,7 +2,7 @@
 this.Golem = this.Golem || {};
 
 (function(window, _, undefined) {
-    var Widget, Collection, Data, Menu, Utility, ButtonBar, definitions;
+    var Widget, Collection, Data, Menu, Utility, ButtonBar, Button, definitions;
     
     if (Golem.Util.checkExists('Golem.UI')) {
         
@@ -71,15 +71,14 @@ this.Golem = this.Golem || {};
          */
         Collection = function() {
             this.setDimensions(1, 4);
-            
-            // sequential list of all items in the collection
-            this.list = [];
-            
-            // used for rare cases when items overflow the container.
-            this.overflow = [];
-            
         };
         Collection.prototype = Object.create(Widget.prototype);
+        
+        // sequential list of all items in the collection
+        Collection.prototype.list = [];
+            
+        // used for rare cases when items overflow the container.
+        Collection.prototype.overflow = [];
         
         /**
          * Sets the boundaries for this collection.  If the collection has
@@ -179,6 +178,7 @@ this.Golem = this.Golem || {};
         };
         
         /**
+         * ButtonBar is useful for things like skill buttons.
          * 
          * @constructor
          * @extends Collection
