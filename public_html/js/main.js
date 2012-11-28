@@ -23,7 +23,7 @@ $(function() {
                 y : 100
             });
         
-            ui.renderWidgets();
+            ui.render();
         });
     });
 });

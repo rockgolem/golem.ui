@@ -21,7 +21,7 @@ this.Golem = this.Golem || {};
         this.options = _.extend({}, options, { canvas : undefined });
         this.prepareCanvas();
         this.loadStage();
-        this.startTicker();
+        this.setupTicker(options);
     };
 
     /**
@@ -64,7 +64,23 @@ this.Golem = this.Golem || {};
         window.onresize = _.bind(this.resizeCanvas, this);
         this.resizeCanvas();
     };
+    
+    /**
+     * Renders the canvas, registers the tick method (call this last in the
+     * client script)
+     * 
+     * @returns {undefined}
+     */
+    UI.prototype.render = function() {
+        this.startTicker();
+        this.renderWidgets();
+    };
 
+    /**
+     * Loops through all widgets, rendering them to the interface.
+     * 
+     * @returns {undefined}
+     */
     UI.prototype.renderWidgets = function() {
         _.each(this.widgets, function(widget) {
             widget.render();
@@ -116,15 +132,29 @@ this.Golem = this.Golem || {};
     };
     
     /**
+     * Binds the ticker listener
      * 
      * @returns {undefined}
      */
     UI.prototype.startTicker = function() {
-        var Ticker = createjs.Ticker;
-        Ticker.useRAF = true;
-        Ticker.setFPS(60);
-        Ticker.addListener(_.bind(tick, this));
+        createjs.Ticker.addListener(_.bind(tick, this));
     };
+
+    /**
+     * Sets ticker options
+     * 
+     * @param {Object} options
+     * @returns {undefined}
+     */
+    UI.prototype.setupTicker = function(options) {
+        var Ticker = createjs.Ticker;
+        
+        options = _.extend({}, options);
+        Ticker.useRAF = options.useRAF || true;
+        Ticker.setFPS(options.FPS || 60);
+    };
+
+    
     
     /**
      * Creates a canvas element and returns it
