@@ -1,19 +1,4 @@
 describe('Golem.UI.Widget', function() {
-    var W = new Golem.UI.Widget();
-    
-    /*it('has a position', function() {
-        expect(W.position.x).toBe(0);
-        expect(W.position.y).toBe(0);
-    });
-    
-    it('can update it\'s position', function() {
-        expect(W.position.x).toBe(0);
-        expect(W.position.y).toBe(0);
-        W.setPosition(10, 100);
-        expect(W.position.x).toBe(10);
-        expect(W.position.y).toBe(100);
-    });*/
-    
     describe('Collection', function() {
         var C;
         beforeEach(function() {
