@@ -79,5 +79,26 @@ describe('Golem.Util', function() {
             Test.emit('event1 event2');
             expect(k).toBe(2);
         });
+        it('can remove an event listener with off(eventName)', function() {
+            var k = 0;
+            Test.on('anEvent', function() { k++; });
+            Test.emit('anEvent');
+            expect(k).toBe(1);
+            
+            Test.off('anEvent');
+            Test.emit('anEvent');
+            expect(k).toBe(1);
+        });
+        it('can remove all event listeners with off()', function() {
+            var k = 0;
+            Test.on('event1', function() { k++; })
+                .on('event2', function() { k++; });
+            Test.emit('event1').emit('event2');
+            expect(k).toBe(2);
+            
+            Test.off();
+            Test.emit('event1').emit('event2');
+            expect(k).toBe(2);
+        });
     });
 });
