@@ -34,11 +34,11 @@ this.Golem = this.Golem || {};
      * @returns {undefined}
      */
     UI.prototype.addWidget = function(obj) {
-        var W = UI.Widget, wid;
-        wid = obj instanceof W ? obj : W.buildWidget(obj);
+        var W = UI.Widget, wid, stage = this.stage;
+        wid = obj instanceof W ? obj : W.buildWidget(obj, stage);
         this.widgets.push(wid);
         
-        this.stage.addChild(wid.displayObject);
+        stage.addChild(wid.displayObject);
     };
 
     /**
@@ -82,6 +82,7 @@ this.Golem = this.Golem || {};
      * @returns {undefined}
      */
     UI.prototype.renderWidgets = function() {
+        this.repositionWidgets();
         _.each(this.widgets, function(widget) {
             widget.render();
         });
@@ -93,8 +94,9 @@ this.Golem = this.Golem || {};
      * @returns {undefined}
      */
     UI.prototype.resizeCanvas = function() {
-        var options, canvas, width, height, aspectRatio, viewportWidth,
-            viewportHeight, viewportAspect, viewportRatio;
+        var options, canvas, width, height, left, top,
+            aspectRatio, viewportWidth, viewportHeight,
+            viewportAspect, viewportRatio;
         
         canvas = this.canvas;
         options = this.options;
@@ -112,16 +114,38 @@ this.Golem = this.Golem || {};
             width  = height * aspectRatio;
         }
         
+        left = ((viewportWidth - width) / 2).toFixed(0);
+        top = ((viewportHeight - height) / 2).toFixed(0);
+        
         _.extend(canvas.style, {
             position : 'fixed',
-            left : ((viewportWidth - width) / 2).toFixed(0) + 'px',
-            top : ((viewportHeight - height) / 2).toFixed(0) + 'px'
+            left : left + 'px',
+            top  : top + 'px'
         });
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
         
+        this.left = parseInt(left, 10);
+        this.top = parseInt(top, 10);
         this.width = width;
         this.height = height;
+        
+        this.repositionWidgets();
+    };
+
+    /**
+     * Since the stage is dynamic, the widgets need to move, too.
+     * @returns {undefined}
+     */
+    UI.prototype.repositionWidgets = function() {
+        var offsetx, offsety;
+        
+        offsetx = this.left;
+        offsety = this.top;
+        
+        _.each(this.widgets, function(widget) {
+            widget.reposition(offsetx, offsety);
+        });
     };
     
     /**

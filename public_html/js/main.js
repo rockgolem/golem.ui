@@ -19,8 +19,10 @@ $(function() {
                 type : 'ButtonBar',
                 className : 'skill-bar',
                 parent : body,
-                x : 100,
-                y : 100,
+                x : 'middle',
+                y : 'bottom',
+                //offsetX : 10,
+                offsetY : 20,
                 rows : 1,
                 columns : 6,
                 spriteSheet : {
@@ -37,8 +39,6 @@ $(function() {
                     }
                 }
             });
-        
-            XX = ui.widgets[0].spriteSheet;
             ui.render();
         });
     });

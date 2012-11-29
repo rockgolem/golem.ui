@@ -8,12 +8,20 @@ this.Golem = this.Golem || {};
         
         /**
          * This object is a parent for all Widgets.  It also contains static
-         * Definitions for those widgets
+         * Definitions for those widgets.
+         * 
+         *  
+         * Make sure to use `Widget.call(this, stage);` in all child
+         * constructors.
+         * 
          * 
          * @constructor
          * @extends EventEmitter
+         * @param {Stage} stage
          */
-        Widget = function() { };
+        Widget = function(stage) {
+            this.stage = stage;
+        };
         Widget.prototype = Object.create(Golem.Util.EventEmitter);
         
         /**
@@ -23,14 +31,72 @@ this.Golem = this.Golem || {};
          * @returns {Widget}
          * @static
          */
-        Widget.buildWidget = function(options) {
-            var widget = new definitions[options.type](options);
+        Widget.buildWidget = function(options, stage) {
+            var widget = new definitions[options.type](options, stage);
             return widget;
         };
     
         /**
-         * Placeholder render method for all widgets.  Typically overwritten.
+         * Returns the normalized X position
          * 
+         * @returns {Number}
+         */
+        Widget.prototype.getNormalizedX = function() {
+            var width, stageWidth, value, offset;
+            
+            value = this.optionX;
+            offset = this.offsetX;
+            if (_.isString(value)) {
+                width = this.width;
+                stageWidth = $(this.stage.canvas).width();
+                offset = offset || 0;
+                switch(value) {
+                    case 'left':
+                        value = offset;
+                        break;
+                    case 'middle':
+                        value = ((stageWidth - width) / 2) + offset;
+                        break;
+                    case 'right':
+                        value = stageWidth - width - offset;
+                        break;
+                }
+            }
+            
+            return parseInt(value, 10);
+        };
+        
+        /**
+         * Returns the normalized Y position
+         * 
+         * @returns {Number}
+         */
+        Widget.prototype.getNormalizedY = function() {
+             var height, value, offset, stageHeight;
+            
+            value = this.optionY;
+            offset = this.offsetY;
+            if (_.isString(value)) {
+                height = this.height;
+                offset = offset || 0;
+                stageHeight = $(this.stage.canvas).height();
+                switch(value) {
+                    case 'top':
+                        value = offset;
+                        break;
+                    case 'middle':
+                        value = ((stageHeight - height) / 2) + offset;
+                        break;
+                    case 'bottom':
+                        value = stageHeight - height - offset;
+                        break;
+                }
+            }
+            return parseInt(value, 10);
+        };
+    
+        /**
+         * Placeholder render method for all widgets.
          * @returns {undefined}
          */
         Widget.prototype.render = function() { };
@@ -43,7 +109,7 @@ this.Golem = this.Golem || {};
          * @returns {createjs.DOMElement}
          */
         Widget.prototype.setupHTML = function(options) {
-            var el, $el, displayObject, classes;
+            var el, $el, displayObject, classes, x, y;
             
             classes = ['golem-widget'].concat(options.classes);
             if (options.className) {
@@ -53,11 +119,20 @@ this.Golem = this.Golem || {};
             el = document.createElement('div');
             $el = $(el);
             $el.addClass(classes.join(' '));
-            
+           
+            this.optionX = options.x;
+            this.optionY = options.y;
+            this.offsetX = options.offsetX;
+            this.offsetY = options.offsetY;
+            x = this.getNormalizedX();
+            y = this.getNormalizedY();
             displayObject = new createjs.DOMElement(el);
-            displayObject.x = options.x || 0;
-            displayObject.x = options.y || 0;
+            displayObject.x = x;
+            displayObject.x = y;
+            this.setVisibility(false);
             
+            this.x = x;
+            this.y = y;
             this.isHTML = true;
             this.el = el;
             this.displayObject = displayObject;
@@ -73,6 +148,32 @@ this.Golem = this.Golem || {};
             if (!_.isUndefined(options)) {
                 this.spriteSheet = new createjs.SpriteSheet(options);
             };
+        };
+        
+        /**
+         * Sets the visibility if a displayObject has been defined
+         * 
+         * @param {Boolean} visible
+         * @returns {undefined}
+         */
+        Widget.prototype.setVisibility = function(visible) {
+            var displayObject = this.displayObject;
+            if (displayObject) {
+                displayObject.visible = !!visible;
+            }
+        };
+    
+        Widget.prototype.setWidthHeight = function() {
+            var spriteSheet, dimensions, width, height;
+            spriteSheet = this.spriteSheet;
+            dimensions = this.dimensions;
+            width = spriteSheet._frameWidth * dimensions[1];
+            height = spriteSheet._frameHeight * dimensions[0];
+            
+            $(this.el).css({ height : height, width : width });
+        
+            this.width = width;
+            this.height = height;
         };
 
         /**
@@ -238,18 +339,21 @@ this.Golem = this.Golem || {};
          * @constructor
          * @extends Collection
          * @param {Object} options
+         * @param {Stage} stage
          */
-        ButtonBar = function(options) {
+        ButtonBar = function(options, stage) {
+            Widget.call(this, stage);
             options = _.extend({
                 classes : ['golem-container', 'golem-button-bar']
             }, options);
-            
             this.parent = $(options.parent || 'body');
             this.buttons = [];
             
             this.setDimensions(options.rows || 1, options.columns || 4);
             this.setupSpriteSheet(options.spriteSheet);
+            this.setWidthHeight();
             this.setupHTML(options);
+            
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
         
@@ -265,11 +369,14 @@ this.Golem = this.Golem || {};
             Collection.prototype.setDimensions.call(this, rows, columns);
             this.setupButtons();
         };
-    
+        
+        /**
+         * Typically called by the setDimensions method of the ButtonBar
+         * 
+         * @returns {undefined}
+         */
         ButtonBar.prototype.setupButtons = function() {
-            var length, list, i, displayObject, b, spriteSheet;
-            
-            displayObject = this.displayObject;
+            var length, list, i, b;
             list = this.list;
             length = list.length;
             for(i = 0; i < length; i++) {
@@ -277,9 +384,6 @@ this.Golem = this.Golem || {};
                     b = new Button();
                     this.add(b, i);
                     b.setPosition(i, this.dimensions);
-                    if (displayObject) {
-                        displayObject.addChild(b.displayObject);
-                    }
                 }
             }
         };
@@ -290,24 +394,32 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         ButtonBar.prototype.render = function() {
-            var $el, spriteSheet, dimensions;
+            var $el, spriteSheet;
             
             $el = $(this.el);
             spriteSheet = this.spriteSheet;
-            dimensions = this.dimensions;
             
-            if (spriteSheet) {
-               $el.css({
-                   height : spriteSheet._frameHeight * dimensions[0],
-                   width  : spriteSheet._frameWidth * dimensions[1]
-               }); 
-            }
             _.each(this.list, function(button, index) {
                 button.render(spriteSheet, index, this.getPosition(index));
                 $el.append(button.el);
             }, this);
             
             this.parent.append($el);
+            this.setVisibility(true);
+        };
+        
+        /**
+         * Used by screen resizing to make sure this widget moves with the
+         * canvas.
+         * 
+         * @param {type} offsetx
+         * @param {type} offsety
+         * @returns {undefined}
+         */
+        ButtonBar.prototype.reposition = function(offsetx, offsety) {
+            var displayObject = this.displayObject;
+            displayObject.x = this.getNormalizedX() + offsetx;
+            displayObject.y = this.getNormalizedY() + offsety;
         };
     
         /**
