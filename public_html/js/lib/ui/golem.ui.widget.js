@@ -79,11 +79,13 @@ this.Golem = this.Golem || {};
                 offset = offset || 0;
                 switch(position) {
                     case 'top':
+                    case 'left':
                         position = offset;
                         break;
                     case 'middle':
                         position = ((stagePosition - originalPosition) / 2) + offset;
                         break;
+                    case 'right':
                     case 'bottom':
                         position = stagePosition - originalPosition - offset;
                         break;
@@ -310,22 +312,18 @@ this.Golem = this.Golem || {};
          * @returns {Object}
          */
         Collection.prototype.getPosition = function(index) {
-            var columns, row, value;
+            var columns, rows, row, value;
             
             columns = this.dimensions[1];
-            
             if (_.isObject(index)) {
                 value = ((index.row - 1) * columns) + index.column - 1;
             } else {
-                if (index === 0) {
-                    value = { row : 1, column : 1 };
-                } else {
-                    row = Math.ceil(index / columns);
-                    value = {
-                        row : row,
-                        column : (index - ((row - 1) * columns)) + 1
-                    };
-                }
+                rows = this.dimensions[0];
+                row = Math.floor(index / columns) + 1;
+                value = {
+                    row : row,
+                    column : (index - ((row - 1) * columns)) + 1
+                };
             }
             return value;
         };
@@ -380,7 +378,6 @@ this.Golem = this.Golem || {};
                 if (_.isUndefined(list[i])) {
                     b = new Button();
                     this.add(b, i);
-                    b.setPosition(i, this.dimensions);
                 }
             }
         };
@@ -446,7 +443,7 @@ this.Golem = this.Golem || {};
             rect = data.rect;
             width = rect.width;
             height = rect.height;
-            
+            console.log(position);
             $(this.el).css({
                 width : width.toString() + 'px',
                 height : height.toString() + 'px',
@@ -460,17 +457,6 @@ this.Golem = this.Golem || {};
                     'transparent'
                 ].join(' ')
             });
-        };
-        
-        /**
-         * 
-         * @param {number} index
-         * @param {Array} dimensions
-         * @returns {undefined}
-         */
-        Button.prototype.setPosition = function(index, dimensions) {
-            //var position = this.getPosition(index);
-            
         };
         
         Button.prototype.setup = function() {

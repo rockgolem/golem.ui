@@ -30,12 +30,25 @@ $(function() {
                     frames : {
                         width : 50,
                         height : 50
-                    },
-                    animations : {
-                        '1' : [0, 0, false],
-                        '2' : [1, 1, false],
-                        '3' : [2, 2, false],
-                        '4' : [3, 3, false]
+                    }
+                }
+            });
+            
+            ui.addWidget({
+                type : 'ButtonBar',
+                className : 'side-bar',
+                parent : body,
+                x : 'right',
+                y : 'middle',
+                offsetX : 20,
+                //offsetY : 20,
+                rows : 6,
+                columns : 1,
+                spriteSheet : {
+                    images : ['/img/example-skills.jpg'],
+                    frames : {
+                        width : 50,
+                        height : 50
                     }
                 }
             });
