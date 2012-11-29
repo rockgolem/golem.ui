@@ -28,6 +28,7 @@ this.Golem = this.Golem || {};
          * Factory for building widgets
          * 
          * @param {Object} options
+         * @param {Stage} stage
          * @returns {Widget}
          * @static
          */
@@ -42,28 +43,12 @@ this.Golem = this.Golem || {};
          * @returns {Number}
          */
         Widget.prototype.getNormalizedX = function() {
-            var width, stageWidth, value, offset;
-            
-            value = this.optionX;
-            offset = this.offsetX;
-            if (_.isString(value)) {
-                width = this.width;
-                stageWidth = $(this.stage.canvas).width();
-                offset = offset || 0;
-                switch(value) {
-                    case 'left':
-                        value = offset;
-                        break;
-                    case 'middle':
-                        value = ((stageWidth - width) / 2) + offset;
-                        break;
-                    case 'right':
-                        value = stageWidth - width - offset;
-                        break;
-                }
-            }
-            
-            return parseInt(value, 10);
+            return Widget.getNormalizedPositionValue(
+                this.optionX,
+                this.width,
+                $(this.stage.canvas).width(),
+                this.offsetX
+            );
         };
         
         /**
@@ -72,27 +57,39 @@ this.Golem = this.Golem || {};
          * @returns {Number}
          */
         Widget.prototype.getNormalizedY = function() {
-             var height, value, offset, stageHeight;
-            
-            value = this.optionY;
-            offset = this.offsetY;
-            if (_.isString(value)) {
-                height = this.height;
+            return Widget.getNormalizedPositionValue(
+                this.optionY,
+                this.height,
+                $(this.stage.canvas).height(),
+                this.offsetY
+            );
+        };
+        
+        /**
+         * 
+         * @param {Mixed} position
+         * @param {Number} originalPosition
+         * @param {Number} stagePosition
+         * @param {Number} offset
+         * @returns {parseInt}
+         * @static
+         */
+        Widget.getNormalizedPositionValue = function(position, originalPosition, stagePosition, offset) {
+            if (_.isString(position)) {
                 offset = offset || 0;
-                stageHeight = $(this.stage.canvas).height();
-                switch(value) {
+                switch(position) {
                     case 'top':
-                        value = offset;
+                        position = offset;
                         break;
                     case 'middle':
-                        value = ((stageHeight - height) / 2) + offset;
+                        position = ((stagePosition - originalPosition) / 2) + offset;
                         break;
                     case 'bottom':
-                        value = stageHeight - height - offset;
+                        position = stagePosition - originalPosition - offset;
                         break;
                 }
             }
-            return parseInt(value, 10);
+            return parseInt(position, 10);
         };
     
         /**
