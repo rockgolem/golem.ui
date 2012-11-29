@@ -108,7 +108,7 @@ this.Golem = this.Golem || {};
          * @returns {createjs.DOMElement}
          */
         Widget.prototype.setupHTML = function(options) {
-            var el, $el, displayObject, classes, x, y;
+            var el, displayObject, classes, x, y;
             
             classes = ['golem-widget'].concat(options.classes);
             if (options.className) {
@@ -116,8 +116,6 @@ this.Golem = this.Golem || {};
             }
             
             el = document.createElement('div');
-            $el = $(el);
-            $el.addClass(classes.join(' '));
            
             this.optionX = options.x;
             this.optionY = options.y;
@@ -135,6 +133,11 @@ this.Golem = this.Golem || {};
             this.isHTML = true;
             this.el = el;
             this.displayObject = displayObject;
+            
+            // update the HTML
+             $(this.el)
+                .css({ height : this.height, width : this.width })
+                .addClass(classes.join(' '));
         };
         
         /**
@@ -169,8 +172,6 @@ this.Golem = this.Golem || {};
             width = spriteSheet._frameWidth * dimensions[1];
             height = spriteSheet._frameHeight * dimensions[0];
             
-            $(this.el).css({ height : height, width : width });
-        
             this.width = width;
             this.height = height;
         };
@@ -346,38 +347,36 @@ this.Golem = this.Golem || {};
             
             this.setDimensions(options.rows || 1, options.columns || 4);
             this.setupSpriteSheet(options.spriteSheet);
+            this.setupButtons(options.buttons);
             this.setWidthHeight();
             this.setupHTML(options);
-            
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
         
         /**
-         * ButtonBars always have a button object in every space.  This button
-         * object keeps track of state, like "empty" or not
+         * Called by the setDimensions method of the ButtonBar
+         * buttons param is an array of objects
          * 
-         * @param {Number} rows
-         * @param {Number} columns
+         * @param {Object} buttons
          * @returns {undefined}
          */
-        ButtonBar.prototype.setDimensions = function(rows, columns) {
-            Collection.prototype.setDimensions.call(this, rows, columns);
-            this.setupButtons();
-        };
-        
-        /**
-         * Typically called by the setDimensions method of the ButtonBar
-         * 
-         * @returns {undefined}
-         */
-        ButtonBar.prototype.setupButtons = function() {
-            var length, list, i, b;
+        ButtonBar.prototype.setupButtons = function(buttons) {
+            var length, list, i, b, spriteSheet, bOptions, stage;
+            stage = this.stage;
             list = this.list;
             length = list.length;
+            spriteSheet = this.spriteSheet;
+            buttons = buttons || [];
             for(i = 0; i < length; i++) {
                 if (_.isUndefined(list[i])) {
-                    b = new Button();
+                    b = new Button(spriteSheet);
                     this.add(b, i);
+                    stage.addChild(b.displayObject);
+                    bOptions = buttons[i];
+                    if (bOptions) {
+                        b.setState(bOptions.state);
+                        b.setIndex(bOptions.index);
+                    }
                 }
             }
         };
@@ -394,7 +393,7 @@ this.Golem = this.Golem || {};
             spriteSheet = this.spriteSheet;
             
             _.each(this.list, function(button, index) {
-                button.render(spriteSheet, index, this.getPosition(index));
+                button.render(this.getPosition(index));
                 $el.append(button.el);
             }, this);
             
@@ -419,46 +418,77 @@ this.Golem = this.Golem || {};
         /**
          * Object used by ButtonBars to track button state
          * 
+         * @param {SpriteSheet} spriteSheet
          * @returns {undefined}
          */
-        Button = function() {
+        Button = function(spriteSheet) {
+            this.state = 'off';
+            this.index = 0;
+            this.spriteSheet = spriteSheet;
             this.setup();
         };
         Button.prototype = Object.create(Golem.Util.EventEmitter);
         
         /**
+         * @static
+         * @type {Array}
+         */
+        Button.buttonStates = [
+            'on',           // button is ready to be clicked
+            'off',          // button shows an empty state
+            'disabled',     // button is shown, but cannot click
+            'mousedown',    // button is being clicked
+            'active',       // button has been clicked 
+            'recharging'    // button is on a timer
+        ];
+    
+        /**
+         * Updates the state of the button to a valid state
+         * 
+         * @param {string} state
+         * @returns {undefined}
+         */
+        Button.prototype.setState = function(state) {
+            this.state = _.contains(Button.buttonStates, state) ? state : 'off';
+        };
+    
+        /**
+         * Sets the index of the sprite to render
+         * 
+         * @param {Number} index
+         * @returns {undefined}
+         */
+        Button.prototype.setIndex = function(index) {
+            this.index = index;
+        };
+        
+        /**
          * Styles the button graphic.  This is called by the ButtonBar render
          * method, no need to call it yourself.
          * 
-         * @param {SpriteSheet} spriteSheet
-         * @param {Number} index
          * @param {Object} position
          * @returns {undefined}
          */
-        Button.prototype.render = function(spriteSheet, index, position) {
-            var data, img, rect, width, height;
+        Button.prototype.render = function(position) {
+            var rect, width, height;
             
-            data = spriteSheet._frames[index];
-            img = data.image;
-            rect = data.rect;
+            rect = this.getSpriteData().rect;
             width = rect.width;
             height = rect.height;
-            console.log(position);
             $(this.el).css({
                 width : width.toString() + 'px',
                 height : height.toString() + 'px',
                 top : (position.row - 1) * height,
-                left : (position.column - 1) * width,
-                background : [
-                    "url('" + img.src + "')",
-                    (-rect.x).toString() + 'px',
-                    (-rect.y).toString() + 'px',
-                    'no-repeat',
-                    'transparent'
-                ].join(' ')
+                left : (position.column - 1) * width
             });
+            this.renderSprite();
         };
         
+        /**
+         * Some initialization code
+         * 
+         * @returns {undefined}
+         */
         Button.prototype.setup = function() {
             var el = document.createElement('div');
             
@@ -466,6 +496,84 @@ this.Golem = this.Golem || {};
             
             this.el = el;
             this.displayObject = new createjs.DOMElement(el);
+            this.setupMouseEvents();
+        };
+    
+        /**
+         * Proxies mouse events on the element to this object
+         * 
+         * @returns {undefined}
+         */
+        Button.prototype.setupMouseEvents = function() {
+            $(this.el).on('click dblclick mousedown mouseup mouseover mouseout mouseenter mouseleave', _.bind(function(event) {
+                this.emit(event.type, event);
+            }, this));
+        };
+        
+        /**
+         * Returns the sprite data for the button's current index
+         * 
+         * @return {Object}
+         */
+        Button.prototype.getSpriteData = function() {
+            return this.spriteSheet._frames[this.index];
+        };
+        
+        /**
+         * Updates the Button Sprite's visual state
+         * 
+         * @returns {undefined}
+         */
+        Button.prototype.renderSprite = function() {
+            var state;
+            
+            state = this.state;
+            this.setSpriteVisible(state !== 'off');
+            switch(this.state) {
+                case 'on':
+                    $(this.el).css({ cursor : 'pointer'});
+                    break;
+                case 'disabled':
+                    this.displayObject.alpha = 0.5;
+                    break;
+                case 'mousedown':
+                    break;
+                case 'active':
+                    break;
+                case 'recharging':
+                    break;
+                case 'off':
+                default:
+                    break;
+            }
+        };
+        
+        /**
+         * Used by render to toggle the background image
+         * 
+         * @param {Boolean} display
+         * @returns {undefined}
+         */
+        Button.prototype.setSpriteVisible = function(display) {
+            var data, img, rect, options;
+            if (display) {
+                data =  this.getSpriteData();
+                img = data.image;
+                rect = data.rect;
+
+                options = {
+                    background : [
+                        "url('" + img.src + "')",
+                        (-rect.x).toString() + 'px',
+                        (-rect.y).toString() + 'px',
+                        'no-repeat',
+                        'transparent'
+                    ].join(' ')
+                };
+            } else {
+                options = { background : 'none' };
+            }
+            $(this.el).css(options);
         };
         
         /**

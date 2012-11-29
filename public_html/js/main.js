@@ -31,7 +31,16 @@ $(function() {
                         width : 50,
                         height : 50
                     }
-                }
+                },
+                buttons : [
+                    { index : 0, state : 'on'},
+                    { index : 1, state : 'on'},
+                    { index : 2, state : 'on'},
+                    { index : 3, state : 'on'},
+                    { index : 4, state : 'disabled'},
+                    { index : 5, state : 'on'}
+                    
+                ]
             });
             
             ui.addWidget({
