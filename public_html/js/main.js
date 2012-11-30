@@ -119,7 +119,7 @@ $(function() {
                 rechargingTime : 6,
                 rechargingTimeRemaining : 0
             });
-            
+        
             ui.render();
         });
     });

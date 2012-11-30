@@ -21,6 +21,7 @@ this.Golem = this.Golem || {};
         this.options = _.extend({}, options, { canvas : undefined });
         this.prepareCanvas();
         this.loadStage();
+        this.resizeCanvas();
         this.setupTicker(options);
     };
 
@@ -63,7 +64,6 @@ this.Golem = this.Golem || {};
     UI.prototype.prepareCanvas = function() {
         $(this.canvas).addClass('golem-stage');
         window.onresize = _.bind(this.resizeCanvas, this);
-        this.resizeCanvas();
     };
     
     /**
@@ -97,7 +97,7 @@ this.Golem = this.Golem || {};
     UI.prototype.resizeCanvas = function() {
         var options, canvas, width, height, left, top,
             aspectRatio, viewportWidth, viewportHeight,
-            viewportAspect, viewportRatio;
+            viewportAspect, viewportRatio, stage;
         
         canvas = this.canvas;
         options = this.options;
@@ -125,6 +125,8 @@ this.Golem = this.Golem || {};
         });
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
+        
+        stage = this.stage;
         
         this.left = parseInt(left, 10);
         this.top = parseInt(top, 10);
