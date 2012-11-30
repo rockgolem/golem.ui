@@ -36,7 +36,7 @@ $(function() {
                 buttons : [
                     { index : 0, state : 'on'},
                     { index : 1, state : 'active'},
-                    { index : 2, state : 'recharging'},
+                    { index : 2, state : 'recharging', time : 30, remaining : 30},
                     { index : 3, state : 'on'},
                     { index : 4, state : 'disabled'},
                     { index : 5, state : 'off'}
