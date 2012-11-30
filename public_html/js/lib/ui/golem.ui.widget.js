@@ -331,6 +331,7 @@ this.Golem = this.Golem || {};
             }, options);
             this.parent = $(options.parent || 'body');
             this.buttons = [];
+            this.queuedButton = null;
             
             this.setDimensions(options.rows || 1, options.columns || 4);
             this.setupSpriteSheet(options.spriteSheet);
@@ -359,7 +360,7 @@ this.Golem = this.Golem || {};
             for(i = 0; i < length; i++) {
                 if (_.isUndefined(list[i])) {
                     
-                    b = new Button(spriteSheet);
+                    b = new Button(spriteSheet, list);
                     this.add(b, i);
                     
                     scrim = b.scrim;
@@ -373,12 +374,28 @@ this.Golem = this.Golem || {};
                         this.updateButton(i, bOptions);
                     }
                     scrims.push(scrim);
+                    
+                    // setup Queue events
+                    b.on('waitingForActive', _.bind(this.updateQueue, this));
+                    b.on('activeComplete', _.bind(this.deQueue, this));
                 }
             }
             // Listen to the Ticker to update scrims
             createjs.Ticker.addListener(_.bind(_.each, this, scrims, function(scrim) {
                 scrim.tick();
             }));
+        };
+    
+        ButtonBar.prototype.updateQueue = function(button) {
+            this.queuedButton = button;
+        };
+    
+        ButtonBar.prototype.deQueue = function() {
+            var button = this.queuedButton;
+            if (!_.isNull(button)) {
+                this.queuedButton = null;
+                button.emit('click');
+            }
         };
     
         /**
@@ -442,15 +459,18 @@ this.Golem = this.Golem || {};
         };
     
         /**
-         * Object used by ButtonBars to track button state
+         * Object used by ButtonBars to track button state.  Aware of other
+         * buttons
          * 
          * @param {SpriteSheet} spriteSheet
+         * @param {Array} buttonList
          * @returns {undefined}
          */
-        Button = function(spriteSheet) {
+        Button = function(spriteSheet, buttonList) {
             this.state = 'off';
             this.index = 0;
             this.spriteSheet = spriteSheet;
+            this.buttonList = buttonList;
             this.setup();
         };
         Button.prototype = Object.create(Golem.Util.EventEmitter);
@@ -529,13 +549,9 @@ this.Golem = this.Golem || {};
             active  = document.createElement('span');
             scrim = new ButtonScrim();
             
-            this.on('click', _.bind(function(){
-                if (this.state === 'on') {
-                    this.setState('active');
-                }
-            }, this));
-            scrim.on('activeComplete', _.bind(this.setState, this, 'recharging'));
-            scrim.on('recharged', _.bind(this.setState, this, 'on'));
+            this.on('click', _.bind(this.onClick, this));
+            this.on('activeComplete', _.bind(this.setState, this, 'recharging'));
+            this.on('recharged', _.bind(this.setState, this, 'on'));
             
             $(active).addClass('active-pulse');
             $(el).addClass(Button.classes.join(' ')).append(active).append(scrim.el);
@@ -543,18 +559,45 @@ this.Golem = this.Golem || {};
             this.el = el;
             this.displayObject = new createjs.DOMElement(el);
             this.scrim = scrim;
-            this.setupMouseEvents();
+            this.setupEvents();
         };
-    
+        
         /**
-         * Proxies mouse events on the element to this object
+         * Callback for click events
          * 
          * @returns {undefined}
          */
-        Button.prototype.setupMouseEvents = function() {
-            $(this.el).on('click dblclick mousedown mouseup mouseover mouseout mouseenter mouseleave', _.bind(function(event) {
+        Button.prototype.onClick = function() {
+            if (this.state === 'on') {
+                if (_.contains(_.pluck(this.buttonList, 'state'), 'active')) {
+                    this.emit('waitingForActive', this);
+                } else {
+                    this.setState('active');
+                }
+            }
+        };
+    
+        /**
+         * Proxies mouse and scrim events on the element to this object
+         * 
+         * @returns {undefined}
+         */
+        Button.prototype.setupEvents = function() {
+            var callback, scrim;
+            
+            callback  = function(event) {
                 this.emit(event.type, event);
-            }, this));
+            };
+            scrim = this.scrim;
+            
+            $(this.el).on([
+                'click', 'dblclick', 'mousedown', 'mouseup',
+                'mouseover', 'mouseout', 'mouseenter', 'mouseleave'
+            ].join(' '), _.bind(callback, this));
+            
+            _.each(['activeComplete', 'recharging', 'recharged'], function(type){
+                scrim.on(type, _.bind(callback, this, { type : type }));
+            }, this);
         };
     
         /**
