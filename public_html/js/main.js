@@ -1,6 +1,7 @@
 $(function() {
     var loader = new Golem.Preload([
-        { id : 'Golem.UI', src : '/js/lib/ui/golem.ui.js' }
+        { id : 'Golem.UI', src : '/js/lib/ui/golem.ui.js' },
+        { id : 'ExampleSkills', src : '/img/example-skills.jpg' }
     ]);
 
     loader.init(function() {

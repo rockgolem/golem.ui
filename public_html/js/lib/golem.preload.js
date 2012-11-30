@@ -104,24 +104,36 @@ this.Golem = this.Golem || {};
      * @param {function} callback
      */
     Preload.prototype.getCallback = function(callback) {
-        var p = this.p;
+        var wrapped, p, manifest;
+        
+        p = this.p;
+        manifest = this.manifest;
         callback = _.isFunction(callback) ? callback : function() {};
-        return _.bind(function() {
-            var loaded = _.all(this.manifest, function(file) {
-                var parts = file.id.split('.'), lib = window;
-                _.each(parts, function(property) {
-                    lib = lib[property];
-                });
+        
+        wrapped = _.bind(function() {
+            var loaded = _.all(manifest, function(file) {
+                var parts, lib;
+                if (_.last(file.src.split('.')) === 'js') {
+                    parts = file.id.split('.');
+                    lib = window;
+                    _.each(parts, function(property) {
+                        lib = lib[property];
+                    });
+                } else {
+                    lib = true;
+                }
                 return !_.isUndefined(lib);
-            }, this);
+            });
         
             if (loaded) {
                 this.manifest = [];
                 callback();
             } else {
-                setTimeout(_.bind(function() { this.getCallback(callback)(); }, this), 1);
+                setTimeout(wrapped, 1);
             }
         }, this);
+        
+        return wrapped;
     };
 
     _.extend(window.Golem, { Preload : Preload });
