@@ -341,46 +341,43 @@ this.Golem = this.Golem || {};
         ButtonBar.prototype = Object.create(Collection.prototype);
         
         /**
-         * Called by the setDimensions method of the ButtonBar
-         * buttons param is an array of objects
+         * Called by the setDimensions method of the ButtonBar.
          * 
          * @param {Object} buttons
          * @returns {undefined}
          */
         ButtonBar.prototype.setupButtons = function(buttons) {
             var length, list, i, b, spriteSheet, bOptions,
-                stage, scrim, scrims;
+                stage, scrim, scrims, displayObjects, addChild;
             stage = this.stage;
             list = this.list;
+            addChild = stage.addChild;
             length = list.length;
             spriteSheet = this.spriteSheet;
             buttons = buttons || [];
             scrims = [];
             for(i = 0; i < length; i++) {
                 if (_.isUndefined(list[i])) {
+                    
                     b = new Button(spriteSheet);
                     this.add(b, i);
-                    stage.addChild(b.displayObject);
                     
                     scrim = b.scrim;
-                    // ned to add scrim elements to the stage for rotation
-                    _.each(scrim.displayObjects, function(scrimDisplay) {
-                        stage.addChild(scrimDisplay);
-                    });
                     
+                    // register with the stage
+                    displayObjects = [b.displayObject].concat(scrim.displayObjects);
+                    addChild.apply(stage, displayObjects);
+                    
+                    // update buttons
                     bOptions = buttons[i];
                     if (bOptions) {
                         this.updateButton(i, bOptions);
-                        b.setIndex(bOptions.index);
-                        b.setActiveTime(bOptions.activeTime);
-                        b.setRechargingTime(bOptions.rechargingTime);
-                        b.setState(bOptions.state, bOptions.activeTimeRemaining || bOptions.rechargeTimeRemaining);
                     }
                     scrims.push(scrim);
                 }
             }
-            // Listen to the scrims for updates
-            createjs.Ticker.addListener(_.bind(_.each, this, scrims, function(scrim){
+            // Listen to the Ticker to update scrims
+            createjs.Ticker.addListener(_.bind(_.each, this, scrims, function(scrim) {
                 scrim.tick();
             }));
         };
@@ -395,6 +392,7 @@ this.Golem = this.Golem || {};
         ButtonBar.prototype.updateButton = function(index, options) {
             var b = this.get(index);
             
+            // keep button defaults
             options = _.extend({
                 index : b.index,
                 activeTime : b.activeTime,
@@ -403,7 +401,8 @@ this.Golem = this.Golem || {};
                 activeTimeRemaining : b.activeTimeRemaining,
                 rechargeTimeRemaining : b.rechargeTimeRemaining
             }, options);
-        
+            
+            // update
             b.setIndex(options.index);
             b.setActiveTime(options.activeTime);
             b.setRechargingTime(options.rechargingTime);
