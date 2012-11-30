@@ -1,14 +1,28 @@
 
-.golem-button-bar { -webkit-touch-callout: none;
--webkit-user-select: none;
--khtml-user-select: none;
--moz-user-select: none;
--ms-user-select: none;
-user-select: none;}
+.golem-button-bar {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 .golem-button
     { cursor:pointer;}
 .golem-button.golem-button-on
     { }
+    
+.golem-button.queued .active-pulse
+    {
+        position:absolute;
+        top:0;
+        left:0;
+        border:rgb(245, 245, 220) solid 1px;
+        box-shadow:inset 0 0 3px 3px rgba(245, 245, 220, 0.7);
+        width:94%;width:-webkit-calc(100% - 2px);width:calc(100% - 2px);
+        height:94%;height:-webkit-calc(100% - 2px);height:calc(100% - 2px);
+    }
+    
 .golem-button.golem-button-on:hover
     {
         filter:saturate(200%);
@@ -31,10 +45,13 @@ user-select: none;}
         filter:url(/css/filters/golem-filters.svg#golem-button-disabled);
         filter:gray;
     }
+    
 .golem-button.golem-button-mousedown
     { }
+    
 .golem-button.golem-button-active
     { }
+    
 .golem-button.golem-button-active .active-pulse
     {
         position:absolute;
@@ -49,6 +66,7 @@ user-select: none;}
         width:92%;width:-webkit-calc(100% - 4px);width:calc(100% - 4px);
         height:92%;height:-webkit-calc(100% - 4px);height:calc(100% - 4px);
     }
+    
 .golem-button.golem-button-recharging
     { }
 
@@ -73,6 +91,7 @@ user-select: none;}
         text-align:center;
         text-shadow:-1px 1px 1px #000,1px 1px 1px #000,1px -1px 1px #000,-1px -1px 1px #000;
         font-family: Ariel, sans-serif;
+        pointer-events:none;
     }
 .golem-button.golem-button-recharging .golem-scrim
     { opacity:1;visibility: visible;}

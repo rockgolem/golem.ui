@@ -46,7 +46,7 @@ $(function() {
                         state : 'on',
                         activeTime : 0,
                         activeTimeRemaining : 0,
-                        rechargingTime : 6,
+                        rechargingTime : 5,
                         rechargingTimeRemaining : 0
                     },
                     {
@@ -54,7 +54,7 @@ $(function() {
                         state : 'on',
                         activeTime : 2,
                         activeTimeRemaining : 0,
-                        rechargingTime : 20,
+                        rechargingTime : 10,
                         rechargingTimeRemaining : 0
                     },
                     {
@@ -62,7 +62,7 @@ $(function() {
                         state : 'on',
                         activeTime : 3,
                         activeTimeRemaining : 0,
-                        rechargingTime : 50,
+                        rechargingTime : 30,
                         rechargingTimeRemaining : 0
                     },
                     {

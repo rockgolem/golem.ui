@@ -376,8 +376,11 @@ this.Golem = this.Golem || {};
                     scrims.push(scrim);
                     
                     // setup Queue events
-                    b.on('waitingForActive', _.bind(this.updateQueue, this));
-                    b.on('activeComplete', _.bind(this.deQueue, this));
+                    b.on('waiting', _.bind(this.updateQueue, this))
+                        .on('activeComplete', _.bind(this.deQueue, this))
+                        .on('recharged', _.bind(this.deQueueIfMatching, this, b))
+                        .on('active', _.bind(this.dumpQueue, this));
+                    
                 }
             }
             // Listen to the Ticker to update scrims
@@ -387,14 +390,49 @@ this.Golem = this.Golem || {};
         };
     
         ButtonBar.prototype.updateQueue = function(button) {
+            var alreadyQueued = this.queuedButton;
+            if (!_.isNull(alreadyQueued)){
+                alreadyQueued.queued = false;
+                alreadyQueued.renderSprite();
+            }
             this.queuedButton = button;
+            button.queued = true;
+            button.renderSprite();
         };
     
         ButtonBar.prototype.deQueue = function() {
             var button = this.queuedButton;
             if (!_.isNull(button)) {
                 this.queuedButton = null;
+                button.queued = false;
                 button.emit('click');
+                // no need to re-render, the click already does it
+            }
+        };
+    
+        ButtonBar.prototype.deQueueIfMatching = function(b) {
+            var button = this.queuedButton;
+            if (button === b) {
+                this.queuedButton = null;
+                b.queued = false;
+                b.emit('click');
+                // no need to re-render, the click already does it
+            }
+        };
+        
+        /**
+         * Sometimes, you need to dump the queued button.
+         * 
+         * @returns {undefined}
+         */
+        ButtonBar.prototype.dumpQueue = function(){
+            var button;
+            
+            button = this.queuedButton;
+            if (!_.isNull(button)) {
+                this.queuedButton = null;
+                button.queued = false;
+                button.renderSprite();
             }
         };
     
@@ -501,6 +539,7 @@ this.Golem = this.Golem || {};
             this.renderSprite();
             
             if (_.contains(['active', 'recharging'], state)) {
+                this.emit(state);
                 this.setCountdown(state, remaining);
             }
         };
@@ -554,7 +593,7 @@ this.Golem = this.Golem || {};
                 .on('recharged', _.bind(this.setState, this, 'on'));
             
             $(active).addClass('active-pulse');
-            $(el).addClass(Button.classes.join(' ')).append(active).append(scrim.el);
+            $(el).addClass(Button.classes.join(' ')).append(scrim.el).append(active);
             
             this.el = el;
             this.displayObject = new createjs.DOMElement(el);
@@ -565,15 +604,21 @@ this.Golem = this.Golem || {};
         /**
          * Callback for click events
          * 
+         * @param {Object} event
          * @returns {undefined}
          */
-        Button.prototype.onClick = function() {
-            if (this.state === 'on') {
-                if (_.contains(_.pluck(this.buttonList, 'state'), 'active')) {
-                    this.emit('waitingForActive', this);
-                } else {
-                    this.setState('active');
-                }
+        Button.prototype.onClick = function(event) {
+            switch(this.state) {
+                case 'on':
+                    if (_.contains(_.pluck(this.buttonList, 'state'), 'active')) {
+                        this.emit('waiting', this);
+                    } else {
+                        this.setState('active');
+                    }
+                    break;
+                case 'recharging':
+                    this.emit('waiting', this);
+                    break;
             }
         };
     
@@ -583,17 +628,19 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         Button.prototype.setupEvents = function() {
-            var callback, scrim;
+            var callback, scrim, mouseEvents;
             
             callback = function(event) {
                 this.emit(event.type, event);
             };
             scrim = this.scrim;
-            
-            $(this.el).on([
+            mouseEvents = [
                 'click', 'dblclick', 'mousedown', 'mouseup',
                 'mouseover', 'mouseout', 'mouseenter', 'mouseleave'
-            ].join(' '), _.bind(callback, this));
+            ].join(' ');
+        
+            $(this.el).on(mouseEvents, _.bind(callback, this));
+            
             
             _.each(['activeComplete', 'recharging', 'recharged'], function(type){
                 scrim.on(type, _.bind(callback, this, { type : type }));
@@ -623,6 +670,9 @@ this.Golem = this.Golem || {};
             
             classes = Button.classes.slice();
             classes.push('golem-button-' + state);
+            if (this.queued) {
+                classes.push('queued');
+            }
             $(this.el).removeClass().addClass(classes.join(' '));
         };
         
