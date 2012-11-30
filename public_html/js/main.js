@@ -34,11 +34,11 @@ $(function() {
                 },
                 buttons : [
                     { index : 0, state : 'on'},
-                    { index : 1, state : 'on'},
-                    { index : 2, state : 'on'},
+                    { index : 1, state : 'active'},
+                    { index : 2, state : 'recharging'},
                     { index : 3, state : 'on'},
                     { index : 4, state : 'disabled'},
-                    { index : 5, state : 'on'}
+                    { index : 5, state : 'off'}
                     
                 ]
             });

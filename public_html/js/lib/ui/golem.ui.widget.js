@@ -126,7 +126,6 @@ this.Golem = this.Golem || {};
             displayObject = new createjs.DOMElement(el);
             displayObject.x = x;
             displayObject.x = y;
-            this.setVisibility(false);
             
             this.x = x;
             this.y = y;
@@ -150,19 +149,6 @@ this.Golem = this.Golem || {};
             if (!_.isUndefined(options)) {
                 this.spriteSheet = new createjs.SpriteSheet(options);
             };
-        };
-        
-        /**
-         * Sets the visibility if a displayObject has been defined
-         * 
-         * @param {Boolean} visible
-         * @returns {undefined}
-         */
-        Widget.prototype.setVisibility = function(visible) {
-            var displayObject = this.displayObject;
-            if (displayObject) {
-                displayObject.visible = !!visible;
-            }
         };
     
         Widget.prototype.setWidthHeight = function() {
@@ -398,7 +384,6 @@ this.Golem = this.Golem || {};
             }, this);
             
             this.parent.append($el);
-            this.setVisibility(true);
         };
         
         /**
@@ -441,6 +426,8 @@ this.Golem = this.Golem || {};
             'active',       // button has been clicked 
             'recharging'    // button is on a timer
         ];
+    
+        Button.classes = ['golem-button'];
     
         /**
          * Updates the state of the button to a valid state
@@ -490,9 +477,13 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         Button.prototype.setup = function() {
-            var el = document.createElement('div');
+            var el, active;
             
-            $(el).addClass('golem-button');
+            el = document.createElement('div');
+            active  = document.createElement('span');
+            
+            $(active).addClass('active-pulse');
+            $(el).addClass(Button.classes.join(' ')).append(active);
             
             this.el = el;
             this.displayObject = new createjs.DOMElement(el);
@@ -509,7 +500,7 @@ this.Golem = this.Golem || {};
                 this.emit(event.type, event);
             }, this));
         };
-        
+    
         /**
          * Returns the sprite data for the button's current index
          * 
@@ -525,36 +516,24 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         Button.prototype.renderSprite = function() {
-            var state;
+            var state, displayObject, classes;
             
             state = this.state;
-            this.setSpriteVisible(state !== 'off');
-            switch(this.state) {
-                case 'on':
-                    $(this.el).css({ cursor : 'pointer'});
-                    break;
-                case 'disabled':
-                    this.displayObject.alpha = 0.5;
-                    break;
-                case 'mousedown':
-                    break;
-                case 'active':
-                    break;
-                case 'recharging':
-                    break;
-                case 'off':
-                default:
-                    break;
-            }
+            displayObject = this.displayObject;
+            this.setBackgroundSprite(state !== 'off');
+            
+            classes = Button.classes.slice();
+            classes.push('golem-button-' + state);
+            $(this.el).removeClass().addClass(classes.join(' '));
         };
         
         /**
-         * Used by render to toggle the background image
+         * Used to render the background image
          * 
          * @param {Boolean} display
          * @returns {undefined}
          */
-        Button.prototype.setSpriteVisible = function(display) {
+        Button.prototype.setBackgroundSprite = function(display) {
             var data, img, rect, options;
             if (display) {
                 data =  this.getSpriteData();
