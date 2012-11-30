@@ -549,9 +549,9 @@ this.Golem = this.Golem || {};
             active  = document.createElement('span');
             scrim = new ButtonScrim();
             
-            this.on('click', _.bind(this.onClick, this));
-            this.on('activeComplete', _.bind(this.setState, this, 'recharging'));
-            this.on('recharged', _.bind(this.setState, this, 'on'));
+            this.on('click', _.bind(this.onClick, this))
+                .on('activeComplete', _.bind(this.setState, this, 'recharging'))
+                .on('recharged', _.bind(this.setState, this, 'on'));
             
             $(active).addClass('active-pulse');
             $(el).addClass(Button.classes.join(' ')).append(active).append(scrim.el);
