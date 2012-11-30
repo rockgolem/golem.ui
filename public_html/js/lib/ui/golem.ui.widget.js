@@ -585,7 +585,7 @@ this.Golem = this.Golem || {};
         Button.prototype.setupEvents = function() {
             var callback, scrim;
             
-            callback  = function(event) {
+            callback = function(event) {
                 this.emit(event.type, event);
             };
             scrim = this.scrim;
