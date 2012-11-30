@@ -348,14 +348,14 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         ButtonBar.prototype.setupButtons = function(buttons) {
-            var length, list, i, b, spriteSheet, bOptions, stage, scrim, Ticker;
-            
-            Ticker = createjs.Ticker;
+            var length, list, i, b, spriteSheet, bOptions,
+                stage, scrim, scrims, state;
             stage = this.stage;
             list = this.list;
             length = list.length;
             spriteSheet = this.spriteSheet;
             buttons = buttons || [];
+            scrims = [];
             for(i = 0; i < length; i++) {
                 if (_.isUndefined(list[i])) {
                     b = new Button(spriteSheet);
@@ -368,17 +368,22 @@ this.Golem = this.Golem || {};
                         stage.addChild(scrimDisplay);
                     });
                     
-                    // Listen to the scrim for updates
-                    Ticker.addListener(_.bind(scrim.tick, scrim));
-                    
                     bOptions = buttons[i];
                     if (bOptions) {
-                        b.setState(bOptions.state);
                         b.setIndex(bOptions.index);
-                        scrim.setCountdown(bOptions.time, bOptions.remaining);
+                        b.setActiveTime(bOptions.activeTime);
+                        b.setRechargingTime(bOptions.rechargingTime);
+                        
+                        state = bOptions.state;
+                        b.setState(state, bOptions.activeTimeRemaining || bOptions.rechargeTimeRemaining);
                     }
+                    scrims.push(scrim);
                 }
             }
+            // Listen to the scrims for updates
+            createjs.Ticker.addListener(_.bind(_.each, this, scrims, function(scrim){
+                scrim.tick();
+            }));
             
         };
         
@@ -450,8 +455,13 @@ this.Golem = this.Golem || {};
          * @param {string} state
          * @returns {undefined}
          */
-        Button.prototype.setState = function(state) {
+        Button.prototype.setState = function(state, remaining) {
             this.state = _.contains(Button.buttonStates, state) ? state : 'off';
+            this.renderSprite();
+            
+            if (_.contains(['active', 'recharging'], state)) {
+                this.setCountdown(state, remaining);
+            }
         };
     
         /**
@@ -497,6 +507,14 @@ this.Golem = this.Golem || {};
             el = document.createElement('div');
             active  = document.createElement('span');
             scrim = new ButtonScrim();
+            
+            this.on('click', _.bind(function(){
+                if (this.state === 'on') {
+                    this.setState('active');
+                }
+            }, this));
+            scrim.on('activeComplete', _.bind(this.setState, this, 'recharging'));
+            scrim.on('recharged', _.bind(this.setState, this, 'on'));
             
             $(active).addClass('active-pulse');
             $(el).addClass(Button.classes.join(' ')).append(active).append(scrim.el);
@@ -575,11 +593,20 @@ this.Golem = this.Golem || {};
         /**
          * Proxy to the scrim setCountdown
          * 
-         * @param {Number} seconds
+         * @param {String} state
+         * @param {Number} remaining
          * @returns {undefined}
          */
-        Button.prototype.setCountdown = function(seconds) {
-            this.scrim.setCountdown(seconds);
+        Button.prototype.setCountdown = function(state, remaining) {
+            this.scrim.setCountdown((state || this.state), remaining);
+        };
+    
+        Button.prototype.setActiveTime = function(seconds) {
+            this.scrim.setActiveTime(seconds);
+        };
+    
+        Button.prototype.setRechargingTime = function(seconds) {
+            this.scrim.setRechargingTime(seconds);
         };
         
         /**
@@ -597,6 +624,8 @@ this.Golem = this.Golem || {};
                 backgroundColor : '#000'
             }, options);
             this.buildElements();
+            
+            this.remaining = -1;
         };
         ButtonScrim.prototype = Object.create(Golem.Util.EventEmitter);
         
@@ -702,17 +731,26 @@ this.Golem = this.Golem || {};
             displayObjects[1].rotation = halfway ? -(180.001 - deg) : 0;
         };
     
+        ButtonScrim.prototype.setActiveTime = function(seconds) {
+            this.activeTime = seconds * 1000;
+        };
+    
+        ButtonScrim.prototype.setRechargingTime = function(seconds) {
+            this.rechargingTime = seconds * 1000;
+        };
+    
         /**
          * Calling this method will set the scrim in motion.  Calling it
          * again will update it's position.  Seconds can be floating point
          * 
-         * @param {Number} time total in seconds that should elapse
+         * @param {String} state either 'active' or 'recharging'
          * @param {Number} remaining how many seconds are left
          * @returns {undefined}
          */
-        ButtonScrim.prototype.setCountdown = function(time, remaining) {
-            this.time = time * 1000;
-            this.remaining = remaining * 1000;
+        ButtonScrim.prototype.setCountdown = function(state, remaining) {
+            this.state = state;
+            this.time = this[state + 'Time'];
+            this.remaining = _.isNumber(remaining) ? remaining * 1000 : this.time;
             this.lastTick = (new Date).getTime();
         };
         
@@ -733,19 +771,21 @@ this.Golem = this.Golem || {};
                 // update the remaining time
                 remaining = Math.max(remaining - elapsed, 0);
                 
-                // set the rotation.
-                deg = 360 - ((remaining / this.time) * 360);
-                
-                this.rotate(parseFloat(deg.toFixed(3)));
-                
-                // update the text number in the DOM
-                this.text.textContent = (remaining / 1000).toFixed(1);
-                
+                if (this.state === 'recharging') {
+                    deg = 360 - ((remaining / this.time) * 360);
+                    this.rotate(parseFloat(deg.toFixed(3)));
+                    this.text.textContent = (remaining / 1000).toFixed(1);
+                }
+            
                 // set the last tick for the next iteration
                 this.lastTick = now;
                 
                 // set the remaining value
                 this.remaining = remaining;
+            } else if (parseInt(remaining, 10) === 0) {
+                this.remaining = -1;
+                this.emit(this.state === 'recharging' ? 'recharged' : 'activeComplete');
+                
             }
         };
         

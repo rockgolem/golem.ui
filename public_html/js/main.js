@@ -34,12 +34,54 @@ $(function() {
                     }
                 },
                 buttons : [
-                    { index : 0, state : 'on'},
-                    { index : 1, state : 'active'},
-                    { index : 2, state : 'recharging', time : 30, remaining : 30},
-                    { index : 3, state : 'on'},
-                    { index : 4, state : 'disabled'},
-                    { index : 5, state : 'off'}
+                    {
+                        index : 0,
+                        state : 'on',
+                        activeTime : 0,
+                        activeTimeRemaining : 0,
+                        rechargingTime : 2,
+                        rechargingTimeRemaining : 0
+                    },
+                    {
+                        index : 1,
+                        state : 'on',
+                        activeTime : 0,
+                        activeTimeRemaining : 0,
+                        rechargingTime : 6,
+                        rechargingTimeRemaining : 0
+                    },
+                    {
+                        index : 2,
+                        state : 'on',
+                        activeTime : 2,
+                        activeTimeRemaining : 0,
+                        rechargingTime : 20,
+                        rechargingTimeRemaining : 0
+                    },
+                    {
+                        index : 3,
+                        state : 'on',
+                        activeTime : 3,
+                        activeTimeRemaining : 0,
+                        rechargingTime : 50,
+                        rechargingTimeRemaining : 0
+                    },
+                    {
+                        index : 4,
+                        state : 'off',
+                        activeTime : 2,
+                        activeTimeRemaining : 0,
+                        rechargingTime : 10,
+                        rechargingTimeRemaining : 0
+                    },
+                    {
+                        index : 5,
+                        state : 'disabled',
+                        activeTime : 2,
+                        activeTimeRemaining : 0,
+                        rechargingTime : 10,
+                        rechargingTimeRemaining : 0
+                    }
                     
                 ]
             });
