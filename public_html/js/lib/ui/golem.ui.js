@@ -31,7 +31,7 @@ this.Golem = this.Golem || {};
      * that instead.
      * 
      * @param {Mixed} obj Hash of options or a Widget
-     * @returns {undefined}
+     * @returns {Widget}
      */
     UI.prototype.addWidget = function(obj) {
         var W = UI.Widget, wid, stage = this.stage;
@@ -39,6 +39,7 @@ this.Golem = this.Golem || {};
         this.widgets.push(wid);
         
         stage.addChild(wid.displayObject);
+        return wid;
     };
 
     /**

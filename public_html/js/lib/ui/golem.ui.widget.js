@@ -349,7 +349,7 @@ this.Golem = this.Golem || {};
          */
         ButtonBar.prototype.setupButtons = function(buttons) {
             var length, list, i, b, spriteSheet, bOptions,
-                stage, scrim, scrims, state;
+                stage, scrim, scrims;
             stage = this.stage;
             list = this.list;
             length = list.length;
@@ -370,12 +370,11 @@ this.Golem = this.Golem || {};
                     
                     bOptions = buttons[i];
                     if (bOptions) {
+                        this.updateButton(i, bOptions);
                         b.setIndex(bOptions.index);
                         b.setActiveTime(bOptions.activeTime);
                         b.setRechargingTime(bOptions.rechargingTime);
-                        
-                        state = bOptions.state;
-                        b.setState(state, bOptions.activeTimeRemaining || bOptions.rechargeTimeRemaining);
+                        b.setState(bOptions.state, bOptions.activeTimeRemaining || bOptions.rechargeTimeRemaining);
                     }
                     scrims.push(scrim);
                 }
@@ -384,7 +383,31 @@ this.Golem = this.Golem || {};
             createjs.Ticker.addListener(_.bind(_.each, this, scrims, function(scrim){
                 scrim.tick();
             }));
+        };
+    
+        /**
+         * Setup a button to use new data.
+         * 
+         * @param {Mixed} index
+         * @param {Object} options
+         * @returns {undefined}
+         */
+        ButtonBar.prototype.updateButton = function(index, options) {
+            var b = this.get(index);
             
+            options = _.extend({
+                index : b.index,
+                activeTime : b.activeTime,
+                rechargingTime : b.rechargingTime,
+                state : b.state,
+                activeTimeRemaining : b.activeTimeRemaining,
+                rechargeTimeRemaining : b.rechargeTimeRemaining
+            }, options);
+        
+            b.setIndex(options.index);
+            b.setActiveTime(options.activeTime);
+            b.setRechargingTime(options.rechargingTime);
+            b.setState(options.state, options.activeTimeRemaining || options.rechargeTimeRemaining);
         };
         
         /**
@@ -471,7 +494,7 @@ this.Golem = this.Golem || {};
          * @returns {undefined}
          */
         Button.prototype.setIndex = function(index) {
-            this.index = index;
+            this.index = index || 0;
         };
         
         /**
@@ -602,11 +625,11 @@ this.Golem = this.Golem || {};
         };
     
         Button.prototype.setActiveTime = function(seconds) {
-            this.scrim.setActiveTime(seconds);
+            this.scrim.setActiveTime(seconds || 0);
         };
     
         Button.prototype.setRechargingTime = function(seconds) {
-            this.scrim.setRechargingTime(seconds);
+            this.scrim.setRechargingTime(seconds || 0);
         };
         
         /**
