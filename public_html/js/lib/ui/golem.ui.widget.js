@@ -348,7 +348,7 @@ this.Golem = this.Golem || {};
          */
         ButtonBar.prototype.setupButtons = function(buttons) {
             var length, list, i, b, spriteSheet, bOptions,
-                stage, scrim, scrims, displayObjects, addChild;
+                stage, scrim, scrims, addChild;
             stage = this.stage;
             list = this.list;
             addChild = stage.addChild;
@@ -364,9 +364,8 @@ this.Golem = this.Golem || {};
                     
                     scrim = b.scrim;
                     
-                    // register with the stage
-                    displayObjects = [b.displayObject].concat(scrim.displayObjects);
-                    addChild.apply(stage, displayObjects);
+                    // register all display objects with the stage
+                    addChild.apply(stage, [b.displayObject].concat(scrim.displayObjects));
                     
                     // update buttons
                     bOptions = buttons[i];
