@@ -37,7 +37,13 @@ this.Golem = this.Golem || {};
             var widget = new definitions[options.type](options, stage);
             return widget;
         };
-    
+        
+        Widget.prototype.children = [];
+        
+        Widget.prototype.addChild = function(widget){
+            this.children.push(widget);
+        };
+        
         /**
          * Returns the normalized X position
          * 
@@ -338,6 +344,7 @@ this.Golem = this.Golem || {};
             this.setupButtons(options.buttons);
             this.setWidthHeight();
             this.setupHTML(options);
+            this.setupFillBar();
         };
         ButtonBar.prototype = Object.create(Collection.prototype);
         
@@ -379,14 +386,39 @@ this.Golem = this.Golem || {};
                     b.on('waiting', _.bind(this.updateQueue, this))
                         .on('activeComplete', _.bind(this.deQueue, this))
                         .on('recharged', _.bind(this.deQueueIfMatching, this, b))
-                        .on('active', _.bind(this.dumpQueue, this));
-                    
+                        .on('active', _.bind(function(activeButton) {
+                            var activeScrim = activeButton.scrim;
+                            this.dumpQueue.apply(this, Array.prototype.slice(arguments, 0));
+                            if (activeScrim.activeTime > 0) {
+                                this.fillBar.setTargetValue(100, activeScrim.activeTime);
+                            } 
+                        }, this));
                 }
             }
             // Listen to the Ticker to update scrims
             createjs.Ticker.addListener(_.bind(_.each, this, scrims, function(scrim) {
                 scrim.tick();
             }));
+        };
+    
+        ButtonBar.prototype.setupFillBar = function() {
+            var fillBar, container;
+            
+            fillBar = Widget.buildWidget({
+                type : 'FillBar',
+                width : this.width / 2,
+                targetValue : 0,
+                x : this.optionX,
+                y : this.optionY,
+                offsetY : this.height + 20
+            }, this.stage);
+            
+            container = fillBar.container;
+            
+            container.alpha = 0;
+            this.fillBar = fillBar;
+            this.stage.addChild(container);
+            this.addChild(fillBar);
         };
     
         ButtonBar.prototype.updateQueue = function(button) {
@@ -539,7 +571,7 @@ this.Golem = this.Golem || {};
             this.renderSprite();
             
             if (_.contains(['active', 'recharging'], state)) {
-                this.emit(state);
+                this.emit(state, this);
                 this.setCountdown(state, remaining);
             }
         };
@@ -1010,6 +1042,18 @@ this.Golem = this.Golem || {};
                 this.drawFillPosition();
             }
             this.lastTick = now;
+        };
+    
+        FillBar.prototype.setTargetValue = function(value, duration) {
+            var container = this.container;
+            this.lastTick = (new Date()).getTime();
+            this.targetValue = value;
+            if (value !== this.value) {
+                this.duration = duration || 1000;
+                createjs.Tween
+                    .get(container)
+                    .to({ alpha : 1 });
+            }
         };
         
         /**

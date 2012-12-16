@@ -85,7 +85,7 @@ $(function() {
                 ]
             });
             
-            widget2 = ui.addWidget({
+            /*widget2 = ui.addWidget({
                 type : 'ButtonBar',
                 className : 'side-bar',
                 parent : body,
@@ -118,7 +118,7 @@ $(function() {
                 activeTimeRemaining : 0,
                 rechargingTime : 6,
                 rechargingTimeRemaining : 0
-            });
+            });*/
         
             ui.render();
         });

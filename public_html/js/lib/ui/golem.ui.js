@@ -148,6 +148,9 @@ this.Golem = this.Golem || {};
         
         _.each(this.widgets, function(widget) {
             widget.reposition(offsetx, offsety);
+            _.each(widget.children, function(childWidget) {
+                childWidget.reposition(offsetx, offsety);
+            });
         });
     };
     
@@ -180,8 +183,6 @@ this.Golem = this.Golem || {};
         Ticker.useRAF = options.useRAF || true;
         Ticker.setFPS(options.FPS || 60);
     };
-
-    
     
     /**
      * Creates a canvas element and returns it
