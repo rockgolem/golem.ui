@@ -1,1 +1,0 @@
-this.Golem = window.Golem || {}; _.extend(Golem, { unit_test2 : true });
