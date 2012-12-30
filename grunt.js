@@ -46,6 +46,10 @@ module.exports = function(grunt) {
         src : ['src/css/golem-ui.css'],
         dest : 'dist/css/<%= pkg.name %>-<%= pkg.version %>.css'
       },
+      filtersDist : {
+        src : ['src/css/filters/golem-filters.svg'],
+        dest : 'dist/css/filters/golem-filters.svg'
+      },
 
       /**
        * Example files
@@ -57,7 +61,11 @@ module.exports = function(grunt) {
       cssExample : {
         src : ['<config:concat.cssDist.dest>'],
         dest : 'examples/css/<%= pkg.name %>.css'
-      }
+      },
+      filtersExample : {
+        src : ['src/css/filters/golem-filters.svg'],
+        dest : 'examples/css/filters/golem-filters.svg'
+      },
     },
     min : {
       jsDist : {
