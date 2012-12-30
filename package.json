@@ -1,28 +1,28 @@
 {
-	"name" : "golem.ui",
-	"version" : "0.0.1",
-	"author" : "Stephen Young <steve@rockgolem.com>",
-	"description" : "UI widgets and event management for HTML5 games",
-	"contributors" : [ 
-		{
-			"name" : "Stephen Young",
-			"email" : "steve@rockgolem.com"
-		}
-	],
-	"main" : null,
-	"repository" : {
-		"type" : "git",
-		"url" : "https://github.com/..."
-	},
-	"keywords" : ["ui", "html5", "games"],
-	"dependencies" : {
-		"underscore" : "1.4.2",
-		"jquery" : "1.8.*",
+    "name" : "golem.ui",
+    "version" : "0.0.1",
+    "author" : "Stephen Young <steve@rockgolem.com>",
+    "description" : "UI widgets and event management for HTML5 games",
+    "contributors" : [ 
+        {
+            "name" : "Stephen Young",
+            "email" : "steve@rockgolem.com"
+        }
+    ],
+    "main" : null,
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/..."
+    },
+    "keywords" : ["ui", "html5", "games"],
+    "dependencies" : {
+        "underscore" : "1.4.2",
+        "jquery" : "1.8.*",
         "createjs" : "0.5.*"
-	},
-	"devDependencies" : {
-		"grunt" : "0.3.17"
-	},
-	"bundledDependencies" : ["jasmine"],
-	"license" : "MIT"
+    },
+    "devDependencies" : {
+        "grunt" : "0.3.17"
+    },
+    "bundledDependencies" : ["jasmine"],
+    "license" : "MIT"
 }
