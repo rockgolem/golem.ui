@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function() {
     /**
      * This object tracks time and updates a rotating "clock" like effect on
      * buttons.
@@ -181,5 +177,3 @@ this.Golem = this.Golem || {};
 
         }
     };
-
-}());

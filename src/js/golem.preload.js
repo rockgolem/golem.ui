@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function(window, document, createjs, _, undefined) {
     var Preload;
     
     /**
@@ -137,4 +133,3 @@ this.Golem = this.Golem || {};
     };
 
     _.extend(window.Golem, { Preload : Preload });
-}(this, document, createjs, _));

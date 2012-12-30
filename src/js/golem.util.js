@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function(window, document, _, undefined) {
     var Util, EventEmitter, logIfUndefined, separator = /\s+/;
 
     Util = {};
@@ -150,4 +146,3 @@ this.Golem = this.Golem || {};
     };
 
     _.extend(window.Golem, {Util: Util});
-}(this, document, _));

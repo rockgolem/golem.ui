@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function() {
     /**
      * Object used by ButtonBars to track button state.  Aware of other
      * buttons
@@ -228,4 +224,3 @@ this.Golem = this.Golem || {};
     Button.prototype.setRechargingTime = function(seconds) {
         this.scrim.setRechargingTime(seconds || 0);
     };
-}());

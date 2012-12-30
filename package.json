@@ -15,7 +15,11 @@
 		"url" : "https://github.com/..."
 	},
 	"keywords" : ["ui", "html5", "games"],
-	"dependencies" : { },
+	"dependencies" : {
+		"underscore" : "1.4.2",
+		"jquery" : "1.8.*",
+        "createjs" : "0.5.*"
+	},
 	"devDependencies" : {
 		"grunt" : "0.3.17"
 	},

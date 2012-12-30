@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function(window, document, _, undefined) {
     var UI, tick;
     
     /**
@@ -195,4 +191,3 @@ this.Golem = this.Golem || {};
     };
 
     _.extend(window.Golem, { UI : UI });
-}(this, document, _));

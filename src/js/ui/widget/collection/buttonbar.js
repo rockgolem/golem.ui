@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function() {
     /**
      * ButtonBar is useful for things like skill buttons.
      * 
@@ -207,4 +203,3 @@ this.Golem = this.Golem || {};
         displayObject.x = this.getNormalizedX() + offsetx;
         displayObject.y = this.getNormalizedY() + offsety;
     };
-}());

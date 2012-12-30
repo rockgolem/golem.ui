@@ -1,7 +1,3 @@
-// namespace
-this.Golem = this.Golem || {};
-
-(function() {
     /**
      * Collection is a base class for button containers, inventory
      * containers, and menu docks (not to be confused with the Menu class).
@@ -154,4 +150,3 @@ this.Golem = this.Golem || {};
         }
         return value;
     };
-}());
