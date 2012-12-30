@@ -1,5 +1,5 @@
 {
-	"name" : "Golem.UI",
+	"name" : "golem.ui",
 	"version" : "0.0.1",
 	"author" : "Stephen Young <steve@rockgolem.com>",
 	"description" : "UI widgets and event management for HTML5 games",
