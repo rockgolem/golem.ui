@@ -8,7 +8,8 @@ module.exports = function(grunt) {
             banner : [
                 '/**\n',
                 ' * <%= pkg.name %> v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n',
-                ' * <%= pkg.description %>\n *\n',
+                ' * <%= pkg.description %>\n',
+                ' *\n',
                 ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n',
                 ' * Licensed <%= pkg.license %>\n',
                 ' */'
@@ -16,9 +17,6 @@ module.exports = function(grunt) {
         },
         lint : {
             files : ['grunt.js', 'test/**/*.js', 'src/*']
-        },
-        qunit : {
-            files : ['test/**/*.html']
         },
         concat : {
             jsDist : {
@@ -75,7 +73,15 @@ module.exports = function(grunt) {
         },
         watch : {
             files : '<config:lint.files>',
-            tasks : 'lint qunit'
+            tasks : 'concat min'
+        },
+        jasmine : {
+            build : {
+                src : '<config:concat.jsDist.dest>',
+                options: {
+                    specs: 'test/spec/*.spec.js'
+                }
+            }
         },
         jshint : {
             options : {
@@ -97,5 +103,5 @@ module.exports = function(grunt) {
     });
 
     // Default task.
-    grunt.registerTask('default', 'concat min');
+    grunt.registerTask('default', 'concat min jasmine');
 };
