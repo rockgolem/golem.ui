@@ -1,11 +1,10 @@
 /**
- * golem.ui v0.0.1 - 2012-12-30
+ * golem.ui v0.0.1 - 2013-01-02
  * UI widgets and event management for HTML5 games
  *
- * Copyright (c) 2012 Stephen Young <steve@rockgolem.com>
+ * Copyright (c) 2013 Stephen Young <steve@rockgolem.com>
  * Licensed MIT
  */
-
 // namespace
 this.Golem = this.Golem || {};
 (function(window, document, _, createjs, undefined) {
@@ -656,14 +655,7 @@ this.Golem = this.Golem || {};
      * Expose Widgets to the Golem namespace.
      */
     Golem.UI.Widget = Widget;
-    /**
-     * Collection is a base class for button containers, inventory
-     * containers, and menu docks (not to be confused with the Menu class).
-     * 
-     * @constructor
-     * @extends Widget
-     */
-    Collection = function() {
+Collection = function() {
         this.setDimensions(1, 4);
     };
     Collection.prototype = Object.create(Widget.prototype);
@@ -808,36 +800,13 @@ this.Golem = this.Golem || {};
         }
         return value;
     };
-    /**
-     * 
-     * @constructor
-     * @extends Widget
-     */
-    Data = function() {};
+Data = function() {};
     Data.prototype = Object.create(Widget.prototype);
-	/**
-     * 
-     * @constructor
-     * @extends Widget
-     */
-    Menu = function() {};
+Menu = function() {};
     Menu.prototype = Object.create(Widget.prototype);
-    /**
-     * 
-     * @constructor
-     * @extends Widget
-     */
-    Utility = function() {};
+Utility = function() {};
     Utility.prototype = Object.create(Widget.prototype);
-    /**
-     * Object used by ButtonBars to track button state.  Aware of other
-     * buttons
-     * 
-     * @param {SpriteSheet} spriteSheet
-     * @param {Array} buttonList
-     * @returns {undefined}
-     */
-    Button = function(spriteSheet, buttonList) {
+Button = function(spriteSheet, buttonList) {
         this.state = 'off';
         this.index = 0;
         this.spriteSheet = spriteSheet;
@@ -1055,16 +1024,7 @@ this.Golem = this.Golem || {};
     Button.prototype.setRechargingTime = function(seconds) {
         this.scrim.setRechargingTime(seconds || 0);
     };
-    /**
-     * This object tracks time and updates a rotating "clock" like effect on
-     * buttons.
-     * 
-     * It assumes a square.
-     * 
-     * @constructor
-     * @param {Object} options
-     */
-    ButtonScrim = function(options) {
+ButtonScrim = function(options) {
         this.options = _.extend({
             size: 50,
             backgroundColor: '#000'
@@ -1234,15 +1194,7 @@ this.Golem = this.Golem || {};
 
         }
     };
-    /**
-     * ButtonBar is useful for things like skill buttons.
-     * 
-     * @constructor
-     * @extends Collection
-     * @param {Object} options
-     * @param {Stage} stage
-     */
-    ButtonBar = function(options, stage) {
+ButtonBar = function(options, stage) {
         Widget.call(this, stage);
         options = _.extend({
             classes : ['golem-container', 'golem-button-bar']
@@ -1439,15 +1391,7 @@ this.Golem = this.Golem || {};
         displayObject.x = this.getNormalizedX() + offsetx;
         displayObject.y = this.getNormalizedY() + offsety;
     };
-    /**
-     * FillBar is useful for things like experience Bars and progress bars.
-     * 
-     * @constructor
-     * @extends Collection
-     * @param {Object} options
-     * @param {Stage} stage
-     */
-    FillBar = function(options, stage) {
+FillBar = function(options, stage) {
         Widget.call(this, stage);
         
         options = _.extend({
@@ -1551,13 +1495,7 @@ this.Golem = this.Golem || {};
                 .to({ alpha : 1 });
         }
     };
-    /**
-    * Container holding private constructor definitions for the Widget
-    * factory.
-    * 
-    * @type {Object}
-    */
-    var definitions = {
+var definitions = {
         Collection : Collection,
             ButtonBar : ButtonBar,
         Data : Data,
