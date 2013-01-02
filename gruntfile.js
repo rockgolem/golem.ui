@@ -45,6 +45,9 @@ module.exports = function(grunt) {
         lint : {
             files : ['grunt.js', 'test/**/*.js', 'src/*']
         },
+        clean : {
+            dist : ['dist/js', 'dist/css']
+        },
         concat : {
             options : {
                 stripBanners : true,
@@ -71,6 +74,19 @@ module.exports = function(grunt) {
                 dest : ['examples/css/', '.css'].join(config.pkg.name)
             }
         },
+
+        copy : {
+            dist : {
+                files : {
+                    "dist/css/filters/golem-filters.svg" : "src/css/filters/golem-filters.svg"
+                }
+            },
+            example : {
+                files : {
+                    "examples/css/filters/golem-filters.svg" : "src/css/filters/golem-filters.svg"
+                }
+            }
+        },
         uglify : {
             options : { mangle : true },
             jsDist : {
@@ -79,10 +95,9 @@ module.exports = function(grunt) {
         },
         jasmine : {
             tests : {
-                src : '<config:concat.jsDist.dest>',
+                src : config.jsDist,
                 options : {
-                    specs : 'test/spec/*.spec.js'//,
-                    //template : 'test/index.html'
+                    specs : 'test/spec/*.spec.js'
                 }
             }
         },
@@ -107,7 +122,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     // Default task.
-    grunt.registerTask('default', ['concat', 'uglify', 'jasmine']);
+    grunt.registerTask('default', ['clean', 'copy', 'concat', 'uglify', 'jasmine']);
 };
