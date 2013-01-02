@@ -5,7 +5,7 @@ describe('Golem.Preload', function() {
     };
     describe('constructor', function() {
         var loader = new Golem.Preload([
-            { id : 'Golem.unit_test1', src : '/test/src/preloader.data1.js' }
+            { id : 'Golem.unit_test1', src : '/js/test/preloader.data1.js' }
         ]);
         afterEach(cleanup);
         it('takes a manifest and stores it', function() {
@@ -22,15 +22,15 @@ describe('Golem.Preload', function() {
         it('appends an asset to the manifest', function() {
             expect(loader.manifest.length).toBe(0);
             loader.addAsset({
-                id : 'Golem.unit_test', src : '/test/src/preloader.data.js'
+                id : 'Golem.unit_test', src : '/js/test/preloader.data.js'
             });
             expect(loader.manifest.length).toBe(1);
         });
         it('can append multiple assets to the manifest', function() {
             expect(loader.manifest.length).toBe(0);
             loader.addAsset([
-                { id : 'Golem.unit_test1', src : '/test/src/preloader.data1.js' },
-                { id : 'Golem.unit_test2', src : '/test/src/preloader.data2.js' }
+                { id : 'Golem.unit_test1', src : '/js/test/preloader.data1.js' },
+                { id : 'Golem.unit_test2', src : '/js/test/preloader.data2.js' }
             ]);
             expect(loader.manifest.length).toBe(2);
         });
@@ -40,8 +40,8 @@ describe('Golem.Preload', function() {
         afterEach(cleanup);
         it('attaches the file handler and loads the manifest', function() {
             var loader = new Golem.Preload([
-                { id : 'Golem.unit_test1', src : '/test/src/preloader.data1.js' },
-                { id : 'Golem.unit_test2', src : '/test/src/preloader.data2.js' }
+                { id : 'Golem.unit_test1', src : '/js/test/preloader.data1.js' },
+                { id : 'Golem.unit_test2', src : '/js/test/preloader.data2.js' }
             ]);
             loader.init(function() {
                 expect(Golem.unit_test1).toBeDefined();
@@ -53,8 +53,8 @@ describe('Golem.Preload', function() {
     describe('handleFile', function() {
         it('gets called for every loaded file in the manifest', function() {
             var loader = new Golem.Preload([
-                { id : 'Golem.unit_test1', src : '/test/src/preloader.data1.js' },
-                { id : 'Golem.unit_test2', src : '/test/src/preloader.data2.js' }
+                { id : 'Golem.unit_test1', src : '/js/test/preloader.data1.js' },
+                { id : 'Golem.unit_test2', src : '/js/test/preloader.data2.js' }
             ]);
             spyOn(loader, 'handleFile');
             loader.init(function() {

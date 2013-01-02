@@ -85,6 +85,14 @@ module.exports = function(grunt) {
                 files : {
                     "examples/css/filters/golem-filters.svg" : "src/css/filters/golem-filters.svg"
                 }
+            },
+
+            // preloader unit tests need some data files, so cpying those to the example directory to be served.
+            tests : {
+                files : {
+                    "examples/js/test/preloader.data1.js" : "test/src/preloader.data1.js",
+                    "examples/js/test/preloader.data2.js" : "test/src/preloader.data2.js"
+                }
             }
         },
         uglify : {
@@ -97,7 +105,8 @@ module.exports = function(grunt) {
             tests : {
                 src : config.jsDist,
                 options : {
-                    specs : 'test/spec/*.spec.js'
+                    specs : 'test/spec/*.spec.js',
+                    template : 'test/grunt.tmpl'
                 }
             }
         },
