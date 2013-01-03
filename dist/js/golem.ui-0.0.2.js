@@ -7,7 +7,7 @@
  */
 // namespace
 this.Golem = this.Golem || {};
-(function(window, document, _, createjs, undefined) {
+(function(window, document, _, $, createjs, undefined) {
     "use strict";
     var Util, EventEmitter, logIfUndefined, separator = /\s+/;
 
@@ -491,12 +491,12 @@ this.Golem = this.Golem || {};
     /**
      * This object is a parent for all Widgets.  It also contains static
      * Definitions for those widgets.
-     * 
-     * 
+     *
+     *
      * Make sure to use `Widget.call(this, stage);` in all child
      * constructors.
-     * 
-     * 
+     *
+     *
      * @constructor
      * @extends EventEmitter
      * @param {Stage} stage
@@ -505,10 +505,10 @@ this.Golem = this.Golem || {};
         this.stage = stage;
     };
     Widget.prototype = Object.create(Golem.Util.EventEmitter);
-    
+
     /**
      * Factory for building widgets
-     * 
+     *
      * @param {Object} options
      * @param {Stage} stage
      * @returns {Widget}
@@ -518,16 +518,16 @@ this.Golem = this.Golem || {};
         var widget = new definitions[options.type](options, stage);
         return widget;
     };
-    
+
     Widget.prototype.children = [];
-    
+
     Widget.prototype.addChild = function(widget){
         this.children.push(widget);
     };
-    
+
     /**
      * Returns the normalized X position
-     * 
+     *
      * @returns {Number}
      */
     Widget.prototype.getNormalizedX = function() {
@@ -538,10 +538,10 @@ this.Golem = this.Golem || {};
             this.offsetX
         );
     };
-    
+
     /**
      * Returns the normalized Y position
-     * 
+     *
      * @returns {Number}
      */
     Widget.prototype.getNormalizedY = function() {
@@ -552,9 +552,9 @@ this.Golem = this.Golem || {};
             this.offsetY
         );
     };
-    
+
     /**
-     * 
+     *
      * @param {Mixed} position
      * @param {Number} originalPosition
      * @param {Number} stagePosition
@@ -591,20 +591,20 @@ this.Golem = this.Golem || {};
     /**
      * Flags the widget as a DOM object type, and creates the element and
      * Easel class required.  Typically used internally.
-     * 
+     *
      * @param {Object} options
      * @returns {createjs.DOMElement}
      */
     Widget.prototype.setupHTML = function(options) {
         var el, displayObject, classes, x, y;
-        
+
         classes = ['golem-widget'].concat(options.classes);
         if (options.className) {
             classes.push(options.className);
         }
-        
+
         el = document.createElement('div');
-       
+
         this.optionX = options.x;
         this.optionY = options.y;
         this.offsetX = options.offsetX;
@@ -614,22 +614,22 @@ this.Golem = this.Golem || {};
         displayObject = new createjs.DOMElement(el);
         displayObject.x = x;
         displayObject.x = y;
-        
+
         this.x = x;
         this.y = y;
         this.isHTML = true;
         this.el = el;
         this.displayObject = displayObject;
-        
+
         // update the HTML
          $(this.el)
             .css({ height : this.height, width : this.width })
             .addClass(classes.join(' '));
     };
-    
+
     /**
      * Some widgets need a spritesheet.  This creates it.
-     * 
+     *
      * @param {type} options
      * @returns {undefined}
      */
@@ -637,7 +637,7 @@ this.Golem = this.Golem || {};
         if (!_.isUndefined(options)) {
             this.spriteSheet = new createjs.SpriteSheet(options);
             console.log(this.spriteSheet);
-        };
+        }
     };
 
     Widget.prototype.setWidthHeight = function() {
@@ -646,11 +646,11 @@ this.Golem = this.Golem || {};
         dimensions = this.dimensions;
         width = spriteSheet._frameWidth * dimensions[1];
         height = spriteSheet._frameHeight * dimensions[0];
-        
+
         this.width = width;
         this.height = height;
     };
-    
+
     /**
      * Expose Widgets to the Golem namespace.
      */
@@ -670,10 +670,10 @@ Collection = function() {
      * Sets the boundaries for this collection.  If the collection has
      * anything currently in the list, they will be reset to the beginning
      * of the list, i.e. indexes will not be maintained.
-     * 
+     *
      * If resizing the collection causes it to be too small to hold all of
      * it's items, they will be pushed onto the overflow buffer.
-     * 
+     *
      * @param {Number} rows
      * @param {Number} columns
      * @returns Collection
@@ -696,7 +696,7 @@ Collection = function() {
 
     /**
      * Pushes items onto the overflow buffer and emits an overflow event
-     * 
+     *
      * @param {Mixed} items
      * @returns {undefined}
      */
@@ -704,7 +704,7 @@ Collection = function() {
         var overflow = this.overflow;
 
         if (_.isArray(items)) {
-            overflow + items;
+            overflow.concat(items);
         } else {
             overflow.push(items);
         }
@@ -713,16 +713,16 @@ Collection = function() {
 
     /**
      * Used to add things to the collection.
-     * 
+     *
      * Index should be zero based.
-     * 
+     *
      * If index is an object, the row and column keys should *not* be zero
      * based, for example:
-     * 
+     *
      * row 1 [column 1, column 2]
      * row 2 [column 1, column 2]
      * row 3 [column 1, column 2]
-     * 
+     *
      * @param {Mixed} item anything you want to store in the collection
      * @param {Mixed} index a numeric index, or an object { row : #, column : # }
      * @returns Collection
@@ -765,7 +765,7 @@ Collection = function() {
     /**
      * Used to retrieve the item in either a zero based index, or a 1 based
      * row/column coordinate
-     * 
+     *
      * @param {Mixed} index numeric index or { row : #, column : # }
      * @returns {undefined}
      */
@@ -780,7 +780,7 @@ Collection = function() {
 
     /**
      * Get the row / column based on an index value, or vice versa
-     * 
+     *
      * @param {Mixed} index
      * @returns {Object}
      */
@@ -1037,7 +1037,7 @@ ButtonScrim = function(options) {
 
     /**
      * Sets up all the needed DOM elements
-     * 
+     *
      * @param {undefined}
      * @returns {undefined}
      */
@@ -1124,7 +1124,7 @@ ButtonScrim = function(options) {
 
     /**
      * Set the scrim rotation reveal state.
-     * 
+     *
      * @param {Number} deg
      * @returns {undefined}
      */
@@ -1148,7 +1148,7 @@ ButtonScrim = function(options) {
     /**
      * Calling this method will set the scrim in motion.  Calling it
      * again will update it's position.  Seconds can be floating point
-     * 
+     *
      * @param {String} state either 'active' or 'recharging'
      * @param {Number} remaining how many seconds are left
      * @returns {undefined}
@@ -1157,13 +1157,13 @@ ButtonScrim = function(options) {
         this.state = state;
         this.time = this[state + 'Time'];
         this.remaining = _.isNumber(remaining) ? remaining * 1000 : this.time;
-        this.lastTick = (new Date).getTime();
+        this.lastTick = (new Date()).getTime();
     };
 
     /**
      * This method is called in a registerd method on the global Ticker by
      * the ButtonBar.  No need to call it yourself.
-     * 
+     *
      * @returns {undefined}
      */
     ButtonScrim.prototype.tick = function() {
@@ -1171,7 +1171,7 @@ ButtonScrim = function(options) {
         remaining = this.remaining;
         if (remaining > 0) {
             // get the elapsed time.
-            now = (new Date).getTime();
+            now = (new Date()).getTime();
             elapsed = now - this.lastTick;
 
             // update the remaining time
@@ -1214,13 +1214,13 @@ ButtonBar = function(options, stage) {
 
     /**
      * Called by the setDimensions method of the ButtonBar.
-     * 
+     *
      * @param {Object} buttons
      * @returns {undefined}
      */
     ButtonBar.prototype.setupButtons = function(buttons) {
         var length, list, i, b, spriteSheet, bOptions,
-            stage, scrim, scrims, addChild;
+            stage, scrim, scrims, addChild, handleActive;
         stage = this.stage;
         list = this.list;
         addChild = stage.addChild;
@@ -1228,6 +1228,15 @@ ButtonBar = function(options, stage) {
         spriteSheet = this.spriteSheet;
         buttons = buttons || [];
         scrims = [];
+
+        handleActive = _.bind(function(activeButton) {
+            var activeScrim = activeButton.scrim;
+            this.dumpQueue.apply(this, Array.prototype.slice(arguments, 0));
+            if (activeScrim.activeTime > 0) {
+                this.fillBar.setTargetValue(100, activeScrim.activeTime);
+            }
+        }, this);
+
         for(i = 0; i < length; i++) {
             if (_.isUndefined(list[i])) {
 
@@ -1250,13 +1259,7 @@ ButtonBar = function(options, stage) {
                 b.on('waiting', _.bind(this.updateQueue, this))
                     .on('activeComplete', _.bind(this.deQueue, this))
                     .on('recharged', _.bind(this.deQueueIfMatching, this, b))
-                    .on('active', _.bind(function(activeButton) {
-                        var activeScrim = activeButton.scrim;
-                        this.dumpQueue.apply(this, Array.prototype.slice(arguments, 0));
-                        if (activeScrim.activeTime > 0) {
-                            this.fillBar.setTargetValue(100, activeScrim.activeTime);
-                        } 
-                    }, this));
+                    .on('active', handleActive);
             }
         }
         // Listen to the Ticker to update scrims
@@ -1318,7 +1321,7 @@ ButtonBar = function(options, stage) {
 
     /**
      * Sometimes, you need to dump the queued button.
-     * 
+     *
      * @returns {undefined}
      */
     ButtonBar.prototype.dumpQueue = function(){
@@ -1334,7 +1337,7 @@ ButtonBar = function(options, stage) {
 
     /**
      * Setup a button to use new data.
-     * 
+     *
      * @param {Mixed} index
      * @param {Object} options
      * @returns {undefined}
@@ -1361,7 +1364,7 @@ ButtonBar = function(options, stage) {
 
     /**
      * Appends the container DOM element to the parent.
-     * 
+     *
      * @returns {undefined}
      */
     ButtonBar.prototype.render = function() {
@@ -1381,7 +1384,7 @@ ButtonBar = function(options, stage) {
     /**
      * Used by screen resizing to make sure this widget moves with the
      * canvas.
-     * 
+     *
      * @param {type} offsetx
      * @param {type} offsety
      * @returns {undefined}
@@ -1503,4 +1506,4 @@ var definitions = {
         Menu : Menu,
         Utility : Utility
     };
-}(this, document, _, createjs));
+}(this, document, _, jQuery, createjs));
