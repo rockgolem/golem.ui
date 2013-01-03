@@ -1,2 +1,2 @@
-(function(window, document, _, createjs, undefined) {
+(function(window, document, _, $, createjs, undefined) {
     "use strict";
