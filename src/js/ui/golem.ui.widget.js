@@ -4,12 +4,12 @@
     /**
      * This object is a parent for all Widgets.  It also contains static
      * Definitions for those widgets.
-     * 
-     * 
+     *
+     *
      * Make sure to use `Widget.call(this, stage);` in all child
      * constructors.
-     * 
-     * 
+     *
+     *
      * @constructor
      * @extends EventEmitter
      * @param {Stage} stage
@@ -18,10 +18,10 @@
         this.stage = stage;
     };
     Widget.prototype = Object.create(Golem.Util.EventEmitter);
-    
+
     /**
      * Factory for building widgets
-     * 
+     *
      * @param {Object} options
      * @param {Stage} stage
      * @returns {Widget}
@@ -31,16 +31,16 @@
         var widget = new definitions[options.type](options, stage);
         return widget;
     };
-    
+
     Widget.prototype.children = [];
-    
+
     Widget.prototype.addChild = function(widget){
         this.children.push(widget);
     };
-    
+
     /**
      * Returns the normalized X position
-     * 
+     *
      * @returns {Number}
      */
     Widget.prototype.getNormalizedX = function() {
@@ -51,10 +51,10 @@
             this.offsetX
         );
     };
-    
+
     /**
      * Returns the normalized Y position
-     * 
+     *
      * @returns {Number}
      */
     Widget.prototype.getNormalizedY = function() {
@@ -65,9 +65,9 @@
             this.offsetY
         );
     };
-    
+
     /**
-     * 
+     *
      * @param {Mixed} position
      * @param {Number} originalPosition
      * @param {Number} stagePosition
@@ -104,20 +104,20 @@
     /**
      * Flags the widget as a DOM object type, and creates the element and
      * Easel class required.  Typically used internally.
-     * 
+     *
      * @param {Object} options
      * @returns {createjs.DOMElement}
      */
     Widget.prototype.setupHTML = function(options) {
         var el, displayObject, classes, x, y;
-        
+
         classes = ['golem-widget'].concat(options.classes);
         if (options.className) {
             classes.push(options.className);
         }
-        
+
         el = document.createElement('div');
-       
+
         this.optionX = options.x;
         this.optionY = options.y;
         this.offsetX = options.offsetX;
@@ -127,22 +127,22 @@
         displayObject = new createjs.DOMElement(el);
         displayObject.x = x;
         displayObject.x = y;
-        
+
         this.x = x;
         this.y = y;
         this.isHTML = true;
         this.el = el;
         this.displayObject = displayObject;
-        
+
         // update the HTML
          $(this.el)
             .css({ height : this.height, width : this.width })
             .addClass(classes.join(' '));
     };
-    
+
     /**
      * Some widgets need a spritesheet.  This creates it.
-     * 
+     *
      * @param {type} options
      * @returns {undefined}
      */
@@ -150,7 +150,7 @@
         if (!_.isUndefined(options)) {
             this.spriteSheet = new createjs.SpriteSheet(options);
             console.log(this.spriteSheet);
-        };
+        }
     };
 
     Widget.prototype.setWidthHeight = function() {
@@ -159,11 +159,11 @@
         dimensions = this.dimensions;
         width = spriteSheet._frameWidth * dimensions[1];
         height = spriteSheet._frameHeight * dimensions[0];
-        
+
         this.width = width;
         this.height = height;
     };
-    
+
     /**
      * Expose Widgets to the Golem namespace.
      */
