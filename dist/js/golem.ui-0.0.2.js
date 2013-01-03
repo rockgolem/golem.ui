@@ -1,5 +1,5 @@
 /**
- * golem.ui v0.0.2 - 2013-01-02
+ * golem.ui v0.0.2 - 2013-01-03
  * UI widgets and event management for HTML5 games
  *
  * Copyright (c) 2013 Stephen Young <steve@rockgolem.com>
