@@ -32,7 +32,7 @@
      */
     ButtonBar.prototype.setupButtons = function(buttons) {
         var length, list, i, b, spriteSheet, bOptions,
-            stage, scrim, scrims, addChild;
+            stage, scrim, scrims, addChild, handleActive;
         stage = this.stage;
         list = this.list;
         addChild = stage.addChild;
@@ -40,6 +40,15 @@
         spriteSheet = this.spriteSheet;
         buttons = buttons || [];
         scrims = [];
+
+        handleActive = _.bind(function(activeButton) {
+            var activeScrim = activeButton.scrim;
+            this.dumpQueue.apply(this, Array.prototype.slice(arguments, 0));
+            if (activeScrim.activeTime > 0) {
+                this.fillBar.setTargetValue(100, activeScrim.activeTime);
+            }
+        }, this);
+
         for(i = 0; i < length; i++) {
             if (_.isUndefined(list[i])) {
 
@@ -62,13 +71,7 @@
                 b.on('waiting', _.bind(this.updateQueue, this))
                     .on('activeComplete', _.bind(this.deQueue, this))
                     .on('recharged', _.bind(this.deQueueIfMatching, this, b))
-                    .on('active', _.bind(function(activeButton) {
-                        var activeScrim = activeButton.scrim;
-                        this.dumpQueue.apply(this, Array.prototype.slice(arguments, 0));
-                        if (activeScrim.activeTime > 0) {
-                            this.fillBar.setTargetValue(100, activeScrim.activeTime);
-                        }
-                    }, this));
+                    .on('active', handleActive);
             }
         }
         // Listen to the Ticker to update scrims
