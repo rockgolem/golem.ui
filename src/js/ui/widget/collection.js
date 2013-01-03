@@ -1,7 +1,7 @@
     /**
      * Collection is a base class for button containers, inventory
      * containers, and menu docks (not to be confused with the Menu class).
-     * 
+     *
      * @constructor
      * @extends Widget
      */
@@ -20,10 +20,10 @@
      * Sets the boundaries for this collection.  If the collection has
      * anything currently in the list, they will be reset to the beginning
      * of the list, i.e. indexes will not be maintained.
-     * 
+     *
      * If resizing the collection causes it to be too small to hold all of
      * it's items, they will be pushed onto the overflow buffer.
-     * 
+     *
      * @param {Number} rows
      * @param {Number} columns
      * @returns Collection
@@ -46,7 +46,7 @@
 
     /**
      * Pushes items onto the overflow buffer and emits an overflow event
-     * 
+     *
      * @param {Mixed} items
      * @returns {undefined}
      */
@@ -63,16 +63,16 @@
 
     /**
      * Used to add things to the collection.
-     * 
+     *
      * Index should be zero based.
-     * 
+     *
      * If index is an object, the row and column keys should *not* be zero
      * based, for example:
-     * 
+     *
      * row 1 [column 1, column 2]
      * row 2 [column 1, column 2]
      * row 3 [column 1, column 2]
-     * 
+     *
      * @param {Mixed} item anything you want to store in the collection
      * @param {Mixed} index a numeric index, or an object { row : #, column : # }
      * @returns Collection
@@ -115,7 +115,7 @@
     /**
      * Used to retrieve the item in either a zero based index, or a 1 based
      * row/column coordinate
-     * 
+     *
      * @param {Mixed} index numeric index or { row : #, column : # }
      * @returns {undefined}
      */
@@ -130,7 +130,7 @@
 
     /**
      * Get the row / column based on an index value, or vice versa
-     * 
+     *
      * @param {Mixed} index
      * @returns {Object}
      */
