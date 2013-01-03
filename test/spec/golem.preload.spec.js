@@ -36,7 +36,7 @@ describe('Golem.Preload', function() {
         });
     });
 
-    describe('init', function() {
+    xdescribe('init', function() {
         afterEach(cleanup);
         it('attaches the file handler and loads the manifest', function() {
             var loader = new Golem.Preload([
@@ -50,7 +50,7 @@ describe('Golem.Preload', function() {
         });
     });
 
-    describe('handleFile', function() {
+    xdescribe('handleFile', function() {
         it('gets called for every loaded file in the manifest', function() {
             var loader = new Golem.Preload([
                 { id : 'Golem.unit_test1', src : '/js/test/preloader.data1.js' },
