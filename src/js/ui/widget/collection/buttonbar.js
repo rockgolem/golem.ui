@@ -1,6 +1,6 @@
     /**
      * ButtonBar is useful for things like skill buttons.
-     * 
+     *
      * @constructor
      * @extends Collection
      * @param {Object} options
@@ -26,7 +26,7 @@
 
     /**
      * Called by the setDimensions method of the ButtonBar.
-     * 
+     *
      * @param {Object} buttons
      * @returns {undefined}
      */
@@ -67,7 +67,7 @@
                         this.dumpQueue.apply(this, Array.prototype.slice(arguments, 0));
                         if (activeScrim.activeTime > 0) {
                             this.fillBar.setTargetValue(100, activeScrim.activeTime);
-                        } 
+                        }
                     }, this));
             }
         }
@@ -130,7 +130,7 @@
 
     /**
      * Sometimes, you need to dump the queued button.
-     * 
+     *
      * @returns {undefined}
      */
     ButtonBar.prototype.dumpQueue = function(){
@@ -146,7 +146,7 @@
 
     /**
      * Setup a button to use new data.
-     * 
+     *
      * @param {Mixed} index
      * @param {Object} options
      * @returns {undefined}
@@ -173,7 +173,7 @@
 
     /**
      * Appends the container DOM element to the parent.
-     * 
+     *
      * @returns {undefined}
      */
     ButtonBar.prototype.render = function() {
@@ -193,7 +193,7 @@
     /**
      * Used by screen resizing to make sure this widget moves with the
      * canvas.
-     * 
+     *
      * @param {type} offsetx
      * @param {type} offsety
      * @returns {undefined}
