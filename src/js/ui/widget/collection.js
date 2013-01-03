@@ -54,7 +54,7 @@
         var overflow = this.overflow;
 
         if (_.isArray(items)) {
-            overflow + items;
+            overflow.concat(items);
         } else {
             overflow.push(items);
         }
