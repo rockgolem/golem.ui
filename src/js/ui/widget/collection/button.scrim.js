@@ -1,9 +1,9 @@
     /**
      * This object tracks time and updates a rotating "clock" like effect on
      * buttons.
-     * 
+     *
      * It assumes a square.
-     * 
+     *
      * @constructor
      * @param {Object} options
      */
@@ -20,7 +20,7 @@
 
     /**
      * Sets up all the needed DOM elements
-     * 
+     *
      * @param {undefined}
      * @returns {undefined}
      */
@@ -107,7 +107,7 @@
 
     /**
      * Set the scrim rotation reveal state.
-     * 
+     *
      * @param {Number} deg
      * @returns {undefined}
      */
@@ -131,7 +131,7 @@
     /**
      * Calling this method will set the scrim in motion.  Calling it
      * again will update it's position.  Seconds can be floating point
-     * 
+     *
      * @param {String} state either 'active' or 'recharging'
      * @param {Number} remaining how many seconds are left
      * @returns {undefined}
@@ -140,13 +140,13 @@
         this.state = state;
         this.time = this[state + 'Time'];
         this.remaining = _.isNumber(remaining) ? remaining * 1000 : this.time;
-        this.lastTick = (new Date).getTime();
+        this.lastTick = (new Date()).getTime();
     };
 
     /**
      * This method is called in a registerd method on the global Ticker by
      * the ButtonBar.  No need to call it yourself.
-     * 
+     *
      * @returns {undefined}
      */
     ButtonScrim.prototype.tick = function() {
@@ -154,7 +154,7 @@
         remaining = this.remaining;
         if (remaining > 0) {
             // get the elapsed time.
-            now = (new Date).getTime();
+            now = (new Date()).getTime();
             elapsed = now - this.lastTick;
 
             // update the remaining time
