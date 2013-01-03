@@ -112,19 +112,9 @@ module.exports = function(grunt) {
         },
         jshint : {
             options : {
-                curly : true,
-                eqeqeq : true,
-                immed : true,
-                latedef : true,
-                newcap : true,
-                noarg : true,
-                sub : true,
-                undef : true,
-                boss : true,
-                eqnull : true,
-                browser : true
+                jshintrc : 'jshint.json'
             },
-            globals : {}
+            source : config.jsDist
         }
     });
 
@@ -133,6 +123,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
     // Default task.
     grunt.registerTask('default', ['clean', 'copy', 'concat', 'uglify', 'jasmine']);
